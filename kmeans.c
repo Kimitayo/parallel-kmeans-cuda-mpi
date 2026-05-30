@@ -9,8 +9,10 @@
 #include "normalize.h"
 #include "distance.h"
 #include "centroid.h"
+#include "cluster.h"
+#include "update_centroid.h"
 
-//gcc kmeans.c ingest.c -o kmeans -lm
+//gcc kmeans.c ingest.c normalize.c distance.c centroid.c cluster.c update_centroid.c -o kmeans -lm
 
 #define K_CLUSTERS 3 // Quantidade de grupos que queremos encontrar
 #define MAX_ITER_ACOES 100 // Critério de parada por repetições
@@ -41,6 +43,7 @@ int main(int argc, char *argv[]) {
     const char *nomeArquivo = "vinhos.csv"; 
 
     Dataset *dataset = carregarDados(nomeArquivo);
+    Vinho *dados = dataset->dados;
 
     // aplicar normalizaçao
     normalizarDataset(dataset);
@@ -50,7 +53,6 @@ int main(int argc, char *argv[]) {
 
     // aplicar o centroides
     Centroide *centroides = inicializarCentroides(dataset, K_CLUSTERS);
-
 
     // TESTE CRIACAO DE CENTROIDES //
     printf("\nCentroides iniciais:\n\n");
@@ -64,11 +66,57 @@ int main(int argc, char *argv[]) {
         printf("\n\n");
     }
 
+    // pra atribuir clusters
+    atribuirClusters(dataset, centroides, K_CLUSTERS);
 
-
-    Vinho *dados = dataset->dados;
     
     
+    printf("\nCentroides apos atualizacao:\n\n");
+    // atualizacao dos centroides conforme cluster
+    atualizarCentroides(dataset, centroides, K_CLUSTERS);
+    for (int i = 0; i < K_CLUSTERS; i++) {
+
+        printf("Centroide %d:\n", i);
+
+        for (int j = 0; j < NUM_FEATURES; j++) {
+
+            printf(
+                "%.3f ",
+                centroides[i].features[j]
+            );
+        }
+
+        printf("\n\n");
+    }
+
+
+
+
+
+
+    printf("\nPrimeiros vinhos agrupados:\n\n");
+
+    for (int i = 0; i < 10; i++) {
+        printf("Vinho %d -> Cluster %d\n", i, dataset->dados[i].cluster);
+    }
+
+
+
+
+
+
+    
+    int contagem[K_CLUSTERS] = {0};
+
+    for (int i = 0; i < tamanhoDataset; i++) {
+        contagem[dados[i].cluster]++;
+    }
+
+    printf("\nDistribuicao dos clusters:\n");
+
+    for (int i = 0; i < K_CLUSTERS; i++) {
+        printf("Cluster %d: %d vinhos\n", i, contagem[i]);
+    }
 
     // testar distance.h 
     double distancia = distanciaEuclidiana(dados[0].features, dados[1].features, NUM_FEATURES);
