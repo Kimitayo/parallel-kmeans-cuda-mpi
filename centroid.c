@@ -62,11 +62,7 @@ Centroide* copiarCentroides(Centroide *originais, int k, int numFeatures) {
     return copia;
 }
 
-void liberarCentroides(
-    Centroide *centroides,
-    int k
-) {
-
+void liberarCentroides(Centroide *centroides, int k) {
     for (int i = 0; i < k; i++) {
         free(centroides[i].features);
     }
