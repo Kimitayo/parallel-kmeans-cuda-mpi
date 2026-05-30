@@ -12,8 +12,9 @@
 #include "cluster.h"
 #include "update_centroid.h"
 #include "convergence.h"
+#include "sse.h"
 
-// gcc kmeans.c ingest.c normalize.c distance.c centroid.c cluster.c update_centroid.c convergence.c -o kmeans -lm
+// gcc kmeans.c ingest.c normalize.c distance.c centroid.c cluster.c update_centroid.c convergence.c sse.c -o kmeans -lm
 
 #define K_CLUSTERS 3 // Quantidade de grupos que queremos encontrar
 #define MAX_ITER_ACOES 100 // Critério de parada por repetições
@@ -55,7 +56,7 @@ int main(int argc, char *argv[]) {
     // inicializar centroide
     Centroide *centroides = inicializarCentroides(dataset, K_CLUSTERS);
 
-    // TESTE CRIACAO DE CENTROIDES //
+    /*// TESTE CRIACAO DE CENTROIDES //
     printf("\nCentroides iniciais:\n\n");
 
     for (int i = 0; i < K_CLUSTERS; i++) {
@@ -65,7 +66,7 @@ int main(int argc, char *argv[]) {
             centroides[i].features[j]);
         }
         printf("\n\n");
-    }
+    }*/
 
    /* // pra atribuir clusters
     atribuirClusters(dataset, centroides, K_CLUSTERS);
@@ -151,14 +152,20 @@ int main(int argc, char *argv[]) {
     }
 
     // testar distance.h 
-    double distancia = distanciaEuclidiana(dados[0].features, dados[1].features, NUM_FEATURES);
+    /*double distancia = distanciaEuclidiana(dados[0].features, dados[1].features, NUM_FEATURES);
 
-    printf("\nDistancia entre vinho 0 e vinho 1: %f\n", distancia);
+    printf("\nDistancia entre vinho 0 e vinho 1: %f\n", distancia);*/
 
 
 
     printf("Dados carregados: %d linhas e %d colunas (features).\n", tamanhoDataset, NUM_FEATURES);
 
+
+    // verificar a qualidade do agrupamento
+    double sse = calcularSSE(dataset, centroides);
+    printf("\nQualidade do agrupamento (SSE): %.6f\n", sse);
+    double sseMedio = sse / dataset->linhas;
+    printf("SSE medio: %.6f\n", sseMedio);
 
     // free
     liberarCentroides(centroides, K_CLUSTERS);
