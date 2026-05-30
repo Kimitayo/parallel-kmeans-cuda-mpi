@@ -11,8 +11,9 @@
 #include "centroid.h"
 #include "cluster.h"
 #include "update_centroid.h"
+#include "convergence.h"
 
-//gcc kmeans.c ingest.c normalize.c distance.c centroid.c cluster.c update_centroid.c -o kmeans -lm
+// gcc kmeans.c ingest.c normalize.c distance.c centroid.c cluster.c update_centroid.c convergence.c -o kmeans -lm
 
 #define K_CLUSTERS 3 // Quantidade de grupos que queremos encontrar
 #define MAX_ITER_ACOES 100 // Critério de parada por repetições
@@ -51,7 +52,7 @@ int main(int argc, char *argv[]) {
     int tamanhoDataset = dataset->linhas;
     alterarVariavelGlobal(dataset->colunas); // atualizar a variável global com o número de colunas do dataset
 
-    // aplicar o centroides
+    // inicializar centroide
     Centroide *centroides = inicializarCentroides(dataset, K_CLUSTERS);
 
     // TESTE CRIACAO DE CENTROIDES //
@@ -66,14 +67,47 @@ int main(int argc, char *argv[]) {
         printf("\n\n");
     }
 
-    // pra atribuir clusters
+   /* // pra atribuir clusters
     atribuirClusters(dataset, centroides, K_CLUSTERS);
-
-    
     
     printf("\nCentroides apos atualizacao:\n\n");
     // atualizacao dos centroides conforme cluster
-    atualizarCentroides(dataset, centroides, K_CLUSTERS);
+    atualizarCentroides(dataset, centroides, K_CLUSTERS); */
+
+    // medir tempo inicial
+    clock_t inicio = clock();
+
+    // pra convergencia
+    for (int iter = 0; iter < MAX_ITER_ACOES; iter++) {
+
+        // guardar os centroides antigos
+        Centroide *antigos = copiarCentroides(centroides, K_CLUSTERS, NUM_FEATURES);
+
+        // colocar cluster
+        atribuirClusters(dataset, centroides, K_CLUSTERS);
+        // atualizar centroide
+        atualizarCentroides(dataset, centroides, K_CLUSTERS);
+
+        // verificar convergencia
+        if (convergiu(antigos, centroides, K_CLUSTERS, NUM_FEATURES, 0.0001)) {
+            printf("\nConvergiu na iteracao %d\n", iter + 1);
+
+            liberarCentroides(antigos, K_CLUSTERS);
+
+            break;
+        }
+
+        liberarCentroides(antigos, K_CLUSTERS);
+    }
+
+    // tempo final
+    clock_t fim = clock();
+    double tempo = (double)(fim - inicio) / CLOCKS_PER_SEC;
+    printf("\nTempo de execucao: %.6f segundos\n", tempo);
+
+
+    // mostrar os centroides finais
+    printf("\nCentroides finais:\n\n");
     for (int i = 0; i < K_CLUSTERS; i++) {
 
         printf("Centroide %d:\n", i);
@@ -93,7 +127,7 @@ int main(int argc, char *argv[]) {
 
 
 
-
+    // mostrar alguns vinhos
     printf("\nPrimeiros vinhos agrupados:\n\n");
 
     for (int i = 0; i < 10; i++) {
@@ -103,9 +137,7 @@ int main(int argc, char *argv[]) {
 
 
 
-
-
-    
+    // contagem por cluster
     int contagem[K_CLUSTERS] = {0};
 
     for (int i = 0; i < tamanhoDataset; i++) {

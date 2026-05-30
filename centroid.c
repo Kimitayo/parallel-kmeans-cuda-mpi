@@ -19,8 +19,7 @@ Centroide* inicializarCentroides(Dataset *dataset, int k) {
 
     // Para cada centroide
     for (int i = 0; i < k; i++) {
-        centroides[i].features =
-            (double*) malloc(numFeatures * sizeof(double));
+        centroides[i].features = (double*) malloc(numFeatures * sizeof(double));
 
         if (!centroides[i].features) {
             printf("Erro ao alocar features do centroide.\n");
@@ -28,19 +27,40 @@ Centroide* inicializarCentroides(Dataset *dataset, int k) {
         }
 
         // escolhe um vinho aleatorio
-        int indiceAleatorio =
-            rand() % dataset->linhas;
+        int indiceAleatorio = rand() % dataset->linhas;
 
         // Copia os atributos do vinho
         for (int j = 0; j < numFeatures; j++) {
-            centroides[i].features[j] =
-                dataset->dados[indiceAleatorio]
-                .features[j];
+            centroides[i].features[j] = dataset->dados[indiceAleatorio].features[j];
         }
     }
     return centroides;
 }
 
+Centroide* copiarCentroides(Centroide *originais, int k, int numFeatures) {
+    Centroide *copia = malloc(k * sizeof(Centroide));
+
+    // verificar a alocacao
+    if (!copia) {
+        printf("Erro ao alocar copia dos centroides.\n");
+        exit(1);
+    }
+
+    for (int i = 0; i < k; i++) {
+        copia[i].features = malloc(numFeatures * sizeof(double));
+
+        // verificar a alocacao das features
+        if (!copia[i].features) {
+            printf("Erro ao alocar features da copia.\n");
+            exit(1);
+        }
+
+        for (int j = 0; j < numFeatures; j++) {
+            copia[i].features[j] = originais[i].features[j];
+        }
+    }
+    return copia;
+}
 
 void liberarCentroides(
     Centroide *centroides,
