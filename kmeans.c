@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <stdio.h>
+
 #include "tipos.h"
 #include "ingest.h"
 #include "normalize.h"
 #include "distance.h"
+#include "centroid.h"
 
 //gcc kmeans.c ingest.c -o kmeans -lm
 
@@ -43,20 +44,44 @@ int main(int argc, char *argv[]) {
 
     // aplicar normalizaçao
     normalizarDataset(dataset);
-    Vinho *dados = dataset->dados;
-    
+
     int tamanhoDataset = dataset->linhas;
     alterarVariavelGlobal(dataset->colunas); // atualizar a variável global com o número de colunas do dataset
 
-    // aplicar distance.h 
+    // aplicar o centroides
+    Centroide *centroides = inicializarCentroides(dataset, K_CLUSTERS);
+
+
+    // TESTE CRIACAO DE CENTROIDES //
+    printf("\nCentroides iniciais:\n\n");
+
+    for (int i = 0; i < K_CLUSTERS; i++) {
+        printf("Centroide %d:\n", i);
+        for (int j = 0; j < NUM_FEATURES; j++) {
+            printf("%.3f ",
+            centroides[i].features[j]);
+        }
+        printf("\n\n");
+    }
+
+
+
+    Vinho *dados = dataset->dados;
+    
+    
+
+    // testar distance.h 
     double distancia = distanciaEuclidiana(dados[0].features, dados[1].features, NUM_FEATURES);
 
     printf("\nDistancia entre vinho 0 e vinho 1: %f\n", distancia);
 
 
-    
-    printf("Dados carregados: %d linhas e %d colunas (features) %d %d.\n", tamanhoDataset, NUM_FEATURES, dados[0].qualidade, dados[0].id);
 
+    printf("Dados carregados: %d linhas e %d colunas (features).\n", tamanhoDataset, NUM_FEATURES);
+
+
+    // free
+    liberarCentroides(centroides, K_CLUSTERS);
     liberarDataset(dataset);
     return 0;
 }
