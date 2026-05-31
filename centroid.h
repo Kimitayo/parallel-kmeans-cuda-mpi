@@ -12,4 +12,7 @@ Centroide* inicializarCentroides(Dataset *dataset, int k);
 // Lliberar a memoria dos centroides
 void liberarCentroides(Centroide *centroides, int k);
 
+// atualizar centroides com base nos vinhos do dataset
+void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k);
+
 #endif

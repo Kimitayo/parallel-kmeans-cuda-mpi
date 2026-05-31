@@ -15,5 +15,5 @@ double distanciaEuclidiana(
         soma += diferenca * diferenca;
     }
 
-    return sqrt(soma);
+    return soma;
 }

@@ -44,11 +44,13 @@ void normalizarDataset(Dataset *dataset) {
                 dataset->dados[i].features[j];
 
             // Evita divisão por zero
-            if (max[j] - min[j] != 0) {
+            if (max[j] - min[j] > 0) {
 
                 dataset->dados[i].features[j] =
                     (valor - min[j]) /
                     (max[j] - min[j]);
+            }else{
+                dataset->dados[i].features[j] = 0;
             }
         }
     }

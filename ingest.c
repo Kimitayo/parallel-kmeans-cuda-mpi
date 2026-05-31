@@ -54,7 +54,7 @@ int contarColunasCSV(const char *nomeArquivo) {
 }
 
 // ATENÇÃO: ASSUME QUE AS DUAS ÚLTIMAS COLUNAS SÃO 'quality' E 'Id', E QUE O RESTANTE SÃO FEATURES
-void lerCSV(const char *nomeArquivo, Vinho dataset[], int numColunas) {
+void lerCSV(const char *nomeArquivo, Vinho dataset[], int numColunas, int numLinhas) {
     FILE *arquivo = fopen(nomeArquivo, "r");
     if (!arquivo) {
         printf("Erro ao abrir o arquivo %s para leitura.\n", nomeArquivo);
@@ -66,11 +66,15 @@ void lerCSV(const char *nomeArquivo, Vinho dataset[], int numColunas) {
     fgets(linha, sizeof(linha), arquivo);
 
     int cont = 0;
-    while (fgets(linha, sizeof(linha), arquivo)) {
+    for (int cont = 0; cont < numLinhas; ) {
+        // Se o arquivo acabar antes do esperado (proteção contra arquivos mal formatados)
+        if (!fgets(linha, sizeof(linha), arquivo)) {
+            break; 
+        }
         // Remove quebra de linha
         linha[strcspn(linha, "\n")] = 0;
 
-        // Ignora linhas vazias
+        // Ignora linhas vazias (sem incrementar o 'cont')
         if (strlen(linha) <= 1) continue; 
 
         // Aloca dinamicamente o array de features para ESTE vinho específico
@@ -122,7 +126,7 @@ Dataset* carregarDados(const char *nomeArquivo) {
         printf("Falha na alocação do Dataset.\n");
         exit(1);
     }
-    lerCSV(nomeArquivo, dados, totalColunas);
+    lerCSV(nomeArquivo, dados, totalColunas, totalLinhas);
 
     dataset->dados = dados;
     dataset->linhas = totalLinhas;

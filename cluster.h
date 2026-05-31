@@ -3,6 +3,7 @@
 
 #include "tipos.h"
 
-void atribuirClusters(Dataset *dataset, Centroide *centroides, int k);
+// retorna 1 se algum ponto mudou de cluster, 0 caso contrário
+int atribuirClusters(Dataset *dataset, Centroide *centroides, int k);
 
 #endif
