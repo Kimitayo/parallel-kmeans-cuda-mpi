@@ -62,7 +62,7 @@ void executarKmeans(Dataset *dataset, Centroide *centroides) {
 
 
 int main(int argc, char *argv[]) {
-    const char *nomeArquivo = "vinhos.csv";
+    const char *nomeArquivo = "../vinhos.csv";
     
     if (argc == 2) {
         K_CLUSTERS = atoi(argv[1]); // atualizar a variável global com a quantidade de clusters desejada
