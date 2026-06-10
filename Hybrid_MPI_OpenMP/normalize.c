@@ -15,23 +15,20 @@ void normalizarDataset(Dataset *dataset) {
     #pragma omp parallel for schedule(static)
     for (int j = 0; j < colunas; j++) {
 
-        min[j] = dataset->dados[0].features[j];
-        max[j] = dataset->dados[0].features[j];
-    }
+        double minLocal = dataset->dados[0].features[j];
+        double maxLocal = dataset->dados[0].features[j];
 
-    // Para encontrar os min e max de forma paralela
-    #pragma omp parallel for schedule(static)
-    for (int i = 0; i < linhas; i++) {
+        for (int i = 0; i < linhas; i++) {
 
-        for (int j = 0; j < colunas; j++) {
+                double valor = dataset->dados[i].features[j];
 
-            double valor = dataset->dados[i].features[j];
+                if (valor < minLocal) minLocal = valor;
+                if (valor > maxLocal) maxLocal = valor;
 
-            if (valor < min[j]) min[j] = valor;
-            if (valor > max[j]) max[j] = valor;
-
+            }
+            min[j] = minLocal;
+            max[j] = maxLocal;
         }
-    }
 
     // Aplicando a normalizacao de forma paralela
     #pragma omp parallel for collapse(2) schedule(static)
@@ -49,6 +46,8 @@ void normalizarDataset(Dataset *dataset) {
             }
         }
     }
+    
+    
 
     printf("Dataset normalizado com sucesso.\n");
 }
