@@ -120,10 +120,11 @@ int main(int argc, char *argv[]) {
 
     // contagem por cluster
     int contagem[K_CLUSTERS];
-
     memset(contagem, 0, sizeof(contagem));
 
+    #pragma omp parallel for 
     for (int i = 0; i < dataset->linhas; i++) {
+        #pragma omp atomic
         contagem[dados[i].cluster]++;
     }
 
