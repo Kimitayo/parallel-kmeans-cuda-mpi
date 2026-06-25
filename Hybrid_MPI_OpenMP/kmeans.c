@@ -119,13 +119,43 @@ int main(int argc, char *argv[]) {
     }
 
     // contagem por cluster
-    int contagem[K_CLUSTERS];
-    memset(contagem, 0, sizeof(contagem));
+    int *contagem = calloc(K_CLUSTERS, sizeof(int));
+    int numThreads = omp_get_max_threads();
+    int *contagemThreads = calloc((size_t) numThreads * (size_t) K_CLUSTERS, sizeof(int));
 
-    #pragma omp parallel for 
-    for (int i = 0; i < dataset->linhas; i++) {
-        #pragma omp atomic
-        contagem[dados[i].cluster]++;
+    if (!contagem || !contagemThreads) {
+        printf("Erro ao alocar contagem dos clusters.\n");
+        free(contagem);
+        free(contagemThreads);
+        liberarCentroides(centroides, K_CLUSTERS);
+        liberarDataset(dataset);
+        return 1;
+    }
+
+    #pragma omp parallel
+    {
+        int tid = omp_get_thread_num();
+        int *contagemLocal = contagemThreads + ((size_t) tid * (size_t) K_CLUSTERS);
+
+        #pragma omp for schedule(static)
+        for (int i = 0; i < dataset->linhas; i++) {
+            int cluster = dados[i].cluster;
+
+            if (cluster >= 0 && cluster < K_CLUSTERS) {
+                contagemLocal[cluster]++;
+            }
+        }
+    }
+
+    #pragma omp parallel for schedule(static)
+    for (int c = 0; c < K_CLUSTERS; c++) {
+        int total = 0;
+
+        for (int t = 0; t < numThreads; t++) {
+            total += contagemThreads[(size_t) t * (size_t) K_CLUSTERS + c];
+        }
+
+        contagem[c] = total;
     }
 
     printf("\nDistribuicao dos clusters:\n");
@@ -133,6 +163,9 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < K_CLUSTERS; i++) {
         printf("Cluster %d: %d vinhos\n", i, contagem[i]);
     }
+
+    free(contagem);
+    free(contagemThreads);
 
 
     // verificar a qualidade do agrupamento
