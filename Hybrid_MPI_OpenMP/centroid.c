@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <mpi.h>
 #include <omp.h>
 
 #include "centroid.h"
@@ -107,7 +108,7 @@ Centroide* copiarCentroides(Centroide *originais, int k, int numFeatures) {
     return copia;
 }
 
-void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
+void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k, MPI_Comm comm) {
     if (!dataset || !dataset->dados || !centroides || k <= 0 || dataset->linhas <= 0 || dataset->colunas <= 0) {
         return;
     }
@@ -118,17 +119,21 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
 
     // quantidade de vinhos por cluster
     int *contagem = (int*) calloc(k, sizeof(int));
+    int *contagemGlobal = (int*) calloc(k, sizeof(int));
     double *soma = (double*) calloc(totalFeatures, sizeof(double));
+    double *somaGlobal = (double*) calloc(totalFeatures, sizeof(double));
     int *contagemThreads = (int*) calloc((size_t) numThreads * (size_t) k, sizeof(int));
     double *somaThreads = (double*) calloc((size_t) numThreads * totalFeatures, sizeof(double));
 
-    if (!contagem || !soma || !contagemThreads || !somaThreads) {
+    if (!contagem || !contagemGlobal || !soma || !somaGlobal || !contagemThreads || !somaThreads) {
         printf("Erro ao alocar acumuladores dos centroides.\n");
         free(contagem);
+        free(contagemGlobal);
         free(soma);
+        free(somaGlobal);
         free(contagemThreads);
         free(somaThreads);
-        exit(1);
+        MPI_Abort(comm, 1);
     }
 
     // soma features dos vinhos
@@ -176,18 +181,23 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
         soma[idx] = totalSoma;
     }
 
+    MPI_Allreduce(contagem, contagemGlobal, k, MPI_INT, MPI_SUM, comm);
+    MPI_Allreduce(soma, somaGlobal, (int) totalFeatures, MPI_DOUBLE, MPI_SUM, comm);
+
     // divide pela quantidade; clusters vazios preservam o centroide anterior
     #pragma omp parallel for collapse(2) schedule(static)
     for (int c = 0; c < k; c++) {
         for (int f = 0; f < numFeatures; f++) {
-            if (contagem[c] != 0) {
-                centroides[c].features[f] = soma[c * numFeatures + f] / contagem[c];
+            if (contagemGlobal[c] != 0) {
+                centroides[c].features[f] = somaGlobal[c * numFeatures + f] / contagemGlobal[c];
             }
         }
     }
 
     free(contagem);
+    free(contagemGlobal);
     free(soma);
+    free(somaGlobal);
     free(contagemThreads);
     free(somaThreads);
 }

@@ -1,6 +1,7 @@
 #ifndef CENTROID_H
 #define CENTROID_H
 
+#include <mpi.h>
 #include "tipos.h"
 
 // criar uma copia dos centroides
@@ -13,6 +14,6 @@ Centroide* inicializarCentroides(Dataset *dataset, int k);
 void liberarCentroides(Centroide *centroides, int k);
 
 // atualizar centroides com base nos vinhos do dataset
-void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k);
+void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k, MPI_Comm comm);
 
 #endif
