@@ -10,7 +10,7 @@ double distanciaEuclidiana(
 
     double soma = 0.0;
 
-    #pragma omp parallel for reduction(+:soma)
+    #pragma omp simd reduction(+:soma)
     for (int i = 0; i < numFeatures; i++) {
 
         double diferenca = ponto1[i] - ponto2[i];
