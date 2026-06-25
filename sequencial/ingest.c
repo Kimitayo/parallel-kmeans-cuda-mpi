@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "ingest.h" 
 
-int contarLinhasCSV(const char *nomeArquivo) {
+Dimensoes contarDimensoesCSV(const char *nomeArquivo) {
     FILE *arquivo = fopen(nomeArquivo, "r");
     if (!arquivo) {
         printf("Erro ao abrir o arquivo %s para contagem.\n", nomeArquivo);
@@ -11,47 +11,37 @@ int contarLinhasCSV(const char *nomeArquivo) {
     }
 
     char linha[1024];
-    int totalLinhas = 0;
+    Dimensoes dimensoes = {0, 0};
 
     // Pula o cabeçalho
     if (!fgets(linha, sizeof(linha), arquivo)) {
         fclose(arquivo);
-        return 0;
+        return dimensoes; // Retorna dimensões zeradas se o arquivo estiver vazio
     }
 
-    // Conta o restante das linhas com dados
-    while (fgets(linha, sizeof(linha), arquivo)) {
-        // Ignora linhas puramente vazias se houver
-        if (strlen(linha) > 1) {
-            totalLinhas++;
-        }
-    }
-
-    fclose(arquivo);
-    return totalLinhas;
-}
-
-int contarColunasCSV(const char *nomeArquivo) {
-    FILE *arquivo = fopen(nomeArquivo, "r");
-    if (!arquivo) return 0;
-
-    char linha[1024];
-    if (!fgets(linha, sizeof(linha), arquivo)) {
-        fclose(arquivo);
-        return 0;
-    }
-    fclose(arquivo);
-
-    int colunas = 1; // Se a linha existe, existe pelo menos 1 coluna
+    int colunas = 1;
     for (int i = 0; linha[i] != '\0'; i++) {
         if (linha[i] == ',') {
             colunas++;
         }
     }
+
+    dimensoes.colunas = colunas - 2; // Subtrai 2 porque as colunas 'quality' e 'Id' não são features de cálculo
     
-    // Subtrai 2 porque as colunas 'quality' e 'Id' não são features de cálculo
-    return colunas - 2; 
+    // Conta o restante das linhas com dados
+    while (fgets(linha, sizeof(linha), arquivo)) {
+        // Ignora linhas puramente vazias se houver
+        if (strlen(linha) > 1) {
+            dimensoes.linhas++;
+        }
+    }
+
+
+
+    fclose(arquivo);
+    return dimensoes;
 }
+
 
 // ATENÇÃO: ASSUME QUE AS DUAS ÚLTIMAS COLUNAS SÃO 'quality' E 'Id', E QUE O RESTANTE SÃO FEATURES
 void lerCSV(const char *nomeArquivo, Vinho dataset[], int numColunas, int numLinhas) {
@@ -65,7 +55,6 @@ void lerCSV(const char *nomeArquivo, Vinho dataset[], int numColunas, int numLin
     // Pula o cabeçalho
     fgets(linha, sizeof(linha), arquivo);
 
-    int cont = 0;
     for (int cont = 0; cont < numLinhas; ) {
         // Se o arquivo acabar antes do esperado (proteção contra arquivos mal formatados)
         if (!fgets(linha, sizeof(linha), arquivo)) {
@@ -111,10 +100,11 @@ void lerCSV(const char *nomeArquivo, Vinho dataset[], int numColunas, int numLin
 }
 
 Dataset* carregarDados(const char *nomeArquivo) {
-    int totalLinhas = contarLinhasCSV(nomeArquivo);
-    int totalColunas = contarColunasCSV(nomeArquivo); 
+    Dimensoes dimensoes = contarDimensoesCSV(nomeArquivo);
+    int totalLinhas = dimensoes.linhas;
+    int totalColunas = dimensoes.colunas;
 
-    if (totalLinhas == 0) {
+    if (totalLinhas == 0 || totalColunas <= 0) {
         printf("O arquivo está vazio ou inválido.\n");
         exit(1);
     }

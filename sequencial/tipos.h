@@ -15,6 +15,11 @@ typedef struct {
 } Dataset;
 
 typedef struct {
+    int linhas;
+    int colunas;
+} Dimensoes;
+
+typedef struct {
     double *features; // O centro do grupo (média geométrica)
 } Centroide;
 
