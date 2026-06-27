@@ -317,7 +317,11 @@ int main(int argc, char *argv[]) {
                 0, MPI_COMM_WORLD);
 
     if (rank == 0) {
-        srand(time(NULL));
+        // Semente FIXA -- mesmo motivo do centroid.c da sequencial: garante
+        // que sequencial e MPI+OpenMP partam dos mesmos centroides iniciais,
+        // tornando o speedup/eficiencia comparaveis (sem isso, a variacao
+        // no numero de iteracoes ate' convergir contamina a medicao).
+        srand(42);
 
         for (int c = 0; c < K_CLUSTERS; c++) {
             int indiceAleatorio = rand() % totalLinhas;

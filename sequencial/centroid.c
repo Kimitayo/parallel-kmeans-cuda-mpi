@@ -15,7 +15,13 @@ Centroide* inicializarCentroides(Dataset *dataset, int k) {
     }
 
     // inicializa com seed aleatoria
-    srand(time(NULL));
+    // Semente FIXA (nao time(NULL)) --> importante para benchmarking:
+    // assim todas as execucoes (sequencial, MPI+OpenMP, CUDA, OpenMP-GPU)
+    // partem dos mesmos centroides iniciais, e o numero de iteracoes ate'
+    // convergir fica igual entre elas. Sem isso, a comparacao de tempo de
+    // execucao mistura "sorte do sorteio aleatorio" com "ganho real do
+    // paralelismo", o que invalida o calculo de speedup/eficiencia.
+    srand(42);
 
     // Para cada centroide
     for (int i = 0; i < k; i++) {
