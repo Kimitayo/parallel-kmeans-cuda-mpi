@@ -15,9 +15,9 @@ Centroide* inicializarCentroides(Dataset *dataset, int k) {
     }
 
     // inicializa com seed aleatoria
-    // Semente FIXA (nao time(NULL)) --> importante para benchmarking:
+    // Semente FIXA (nao time(NULL)) -- importante para benchmarking:
     // assim todas as execucoes (sequencial, MPI+OpenMP, CUDA, OpenMP-GPU)
-    // partem dos mesmos centroides iniciais, e o numero de iteracoes ate'
+    // partem dos MESMOS centroides iniciais, e o numero de iteracoes ate'
     // convergir fica igual entre elas. Sem isso, a comparacao de tempo de
     // execucao mistura "sorte do sorteio aleatorio" com "ganho real do
     // paralelismo", o que invalida o calculo de speedup/eficiencia.
@@ -85,13 +85,6 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
         exit(1);
     }
 
-    // zera centroides
-    for (int c = 0; c < k; c++) {
-        for (int f = 0; f < numFeatures; f++) {
-            centroides[c].features[f] = 0.0;
-        }
-    }
-
     // soma features dos vinhos
     for (int i = 0; i < dataset->linhas; i++) {
         int cluster = dataset->dados[i].cluster;
@@ -102,7 +95,10 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
         }
     }
 
-    // divide pela quantidade
+    // divide pela quantidade; clusters vazios preservam o centroide anterior
+    // (sem zerar antes -- um centroide zerado, com dados normalizados entre
+    // 0 e 1, pode atrair pontos artificialmente pra um canto do espaco de
+    // features que nao tem nada a ver com a distribuicao real dos dados)
     for (int c = 0; c < k; c++) {
         if (contagem[c] == 0)
             continue;
