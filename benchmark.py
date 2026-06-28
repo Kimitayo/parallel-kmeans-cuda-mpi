@@ -29,10 +29,9 @@ import shutil
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 K_CLUSTERS = 3
 MAX_ITER = 100
-REPETICOES = 3  # quantas vezes roda cada configuracao (usamos o melhor tempo, reduz ruido do SO)
+REPETICOES = 5  # quantas vezes roda cada configuracao (usamos a média dos tempos, reduz ruido do SO)
 
 COMPILADOR_C = "gcc-16" # é o do meu pc, melhor alterar de acordo
-
 
 COMBINACOES_MPI_OPENMP = [
     # (processos_mpi, threads_openmp)  -> total de recursos usados
@@ -67,7 +66,7 @@ def extrair_tempo(saida_stdout, comando_str):
 
 
 def rodar(comando, cwd, env=None, repeticoes=REPETICOES):
-    """Roda o comando `repeticoes` vezes e retorna o MENOR tempo (menos ruido)."""
+    """Roda o comando `repeticoes` vezes e retorna a média de tempo"""
     tempos = []
     comando_str = " ".join(comando)
 
@@ -86,7 +85,7 @@ def rodar(comando, cwd, env=None, repeticoes=REPETICOES):
         tempos.append(tempo)
         print(f"    tentativa {i + 1}/{repeticoes}: {tempo:.6f}s")
 
-    return min(tempos)
+    return sum(tempos) / len(tempos)
 
 
 def compilar(comando, cwd, nome_etapa):
@@ -174,7 +173,7 @@ def main():
                 "eficiencia": eficiencia,
             })
 
-    # 3) CUDA (so' roda se houver nvcc -- normalmente so' no NPAD)
+    # 3) CUDA (só roda se houver nvcc -- normalmente só no NPAD)
     pasta_cuda = os.path.join(RAIZ, "CUDA")
     if not os.path.isdir(pasta_cuda):
         print("\n[AVISO] Pasta 'CUDA/' nao encontrada -- pulando essa etapa.")
@@ -183,7 +182,7 @@ def main():
               "(normal se voce estiver rodando isso fora do NPAD).")
     else:
         compilar(
-            ["nvcc", "-O3", "-arch=sm_60", "kmeans.cu", "ingest.c", "normalize.cu",
+            ["nvcc", "-O2", "-arch=sm_60", "kmeans.cu", "ingest.c", "normalize.cu",
              "distance.c", "centroid.cu", "cluster.cu", "convergence.c", "sse.c",
              "-o", "kmeans_cuda", "-lm"],
             cwd=pasta_cuda, nome_etapa="versao CUDA"
