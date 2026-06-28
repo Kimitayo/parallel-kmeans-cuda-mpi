@@ -31,7 +31,7 @@ K_CLUSTERS = 3
 MAX_ITER = 100
 REPETICOES = 5  # quantas vezes roda cada configuracao (usamos a média dos tempos, reduz ruido do SO)
 
-COMPILADOR_C = "gcc-16" # é o do meu pc, melhor alterar de acordo
+COMPILADOR_C = "gcc" # é o do meu pc, melhor alterar de acordo
 
 COMBINACOES_MPI_OPENMP = [
     # (processos_mpi, threads_openmp)  -> total de recursos usados
@@ -71,10 +71,19 @@ def rodar(comando, cwd, env=None, repeticoes=REPETICOES):
     comando_str = " ".join(comando)
 
     for i in range(repeticoes):
+
+        # Antes: capture_output=True, text=True
+        # Agora (compatível com Python 3.6):
         resultado = subprocess.run(
             comando, cwd=cwd, env=env,
-            capture_output=True, text=True
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            universal_newlines=True # No Python 3.6, 'universal_newlines' faz o mesmo que 'text=True'
         )
+
+        # resultado = subprocess.run(
+        #     comando, cwd=cwd, env=env,
+        #     capture_output=True, text=True
+        # )
 
         if resultado.returncode != 0:
             print(f"[ERRO] Falha ao executar: {comando_str}")
@@ -90,7 +99,15 @@ def rodar(comando, cwd, env=None, repeticoes=REPETICOES):
 
 def compilar(comando, cwd, nome_etapa):
     print(f"Compilando {nome_etapa}...")
-    resultado = subprocess.run(comando, cwd=cwd, capture_output=True, text=True)
+    # resultado = subprocess.run(comando, cwd=cwd, capture_output=True, text=True)
+    # Antes: capture_output=True, text=True
+    # Agora (compatível com Python 3.6):
+    resultado = subprocess.run(
+        comando, cwd=cwd, 
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
+        universal_newlines=True
+    )
+
     if resultado.returncode != 0:
         print(f"[ERRO] Falha ao compilar {nome_etapa}:")
         print(resultado.stderr)
@@ -182,7 +199,7 @@ def main():
               "(normal se voce estiver rodando isso fora do NPAD).")
     else:
         compilar(
-            ["nvcc", "-O2", "-arch=sm_60", "kmeans.cu", "ingest.c", "normalize.cu",
+            ["nvcc", "-O2", "-rdc=true", "-arch=sm_70", "kmeans.cu", "ingest.c", "normalize.cu",
              "distance.c", "centroid.cu", "cluster.cu", "convergence.c", "sse.c",
              "-o", "kmeans_cuda", "-lm"],
             cwd=pasta_cuda, nome_etapa="versao CUDA"
