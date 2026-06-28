@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "ingest.h" 
+#include "ingest.cuh" 
 
 Dimensoes contarDimensoesCSV(const char *nomeArquivo) {
     FILE *arquivo = fopen(nomeArquivo, "r");

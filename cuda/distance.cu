@@ -1,11 +1,7 @@
 #include <math.h>
-#include "distance.h"
+#include "distance.cuh"
 
-double distanciaEuclidiana(
-    double *ponto1,
-    double *ponto2,
-    int numFeatures
-) {
+__host__ __device__ double distanciaEuclidiana(const double *ponto1, const double *ponto2, int numFeatures) {
 
     double soma = 0.0;
 
