@@ -13,7 +13,6 @@
 #include "convergence.h"
 #include "sse.h"
 
-// mpicc -fopenmp kmeans.c ingest.c normalize.c distance.c centroid.c cluster.c convergence.c sse.c -o kmeans -lm
 
 int K_CLUSTERS = 3; // Quantidade de grupos que queremos encontrar
 int MAX_ITER_ACOES = 100; // Critério de parada por repetições

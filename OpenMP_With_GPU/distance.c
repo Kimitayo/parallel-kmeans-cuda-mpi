@@ -1,6 +1,7 @@
 #include <math.h>
 #include "distance.h"
 
+#pragma omp declare target
 double distanciaEuclidiana(
     double *ponto1,
     double *ponto2,
@@ -17,3 +18,4 @@ double distanciaEuclidiana(
 
     return soma;
 }
+#pragma omp end declare target

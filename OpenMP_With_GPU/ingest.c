@@ -53,8 +53,11 @@ void lerCSV(const char *nomeArquivo, Vinho dataset[], int numColunas, int numLin
 
     char linha[2048]; // Buffer para armazenar cada linha do CSV
     // Pula o cabeçalho
-    fgets(linha, sizeof(linha), arquivo);
 
+    if (fgets(linha, sizeof(linha), arquivo)) {
+        // Não faz nada, leu com sucesso
+    }
+    
     for (int cont = 0; cont < numLinhas; ) {
         // Se o arquivo acabar antes do esperado (proteção contra arquivos mal formatados)
         if (!fgets(linha, sizeof(linha), arquivo)) {

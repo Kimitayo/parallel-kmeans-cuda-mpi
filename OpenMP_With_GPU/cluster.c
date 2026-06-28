@@ -6,6 +6,7 @@
 int atribuirClusters(Dataset *dataset, Centroide *centroides, int k) {
     int mudouCluster = 0;
 
+    #pragma omp target teams distribute parallel for reduction(+:mudouCluster)
     for (int i = 0; i < dataset->linhas; i++) {
         double menorDistancia = DBL_MAX;
         int melhorCluster = -1;
