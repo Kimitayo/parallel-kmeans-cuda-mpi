@@ -22,7 +22,7 @@ ARQUIVO_ORIGINAL = "vinhos.csv"
 ARQUIVO_SAIDA = "vinhos_stress.csv"
 LINHAS_DESEJADAS = int(sys.argv[1]) if len(sys.argv) > 1 else 100_000
 
-# pequeno ruido aleatorio (+-0.5%) em cada feature numerica, so' pra evitar
+# pequeno ruido aleatorio (+-0.5%) em cada feature numerica, so pra evitar
 # que o dataset fique com milhares de pontos EXATAMENTE identicos (o que
 # deixaria o clustering artificialmente "facil demais" e poderia mascarar
 # o comportamento real do algoritmo)
@@ -65,7 +65,7 @@ def main():
                     fator = 1.0 + random.uniform(-RUIDO_RELATIVO, RUIDO_RELATIVO)
                     nova_linha[idx] = f"{valor * fator:.6f}"
 
-                # Id sempre unico e sequencial (nao e' usado pelo algoritmo,
+                # Id sempre unico e sequencial (nao e usado pelo algoritmo,
                 # mas mantemos por organizacao)
                 nova_linha[-1] = str(novo_id)
 

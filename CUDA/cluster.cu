@@ -16,7 +16,7 @@
 //
 // Passos desta funcao (sempre os mesmos, em toda chamada):
 //   1. "Achatar" o dataset (Dataset->dados[i].features, que sao varios
-//      ponteiros) num unico vetor continuo de doubles --? a GPU nao consegue
+//      ponteiros) num unico vetor continuo de doubles > a GPU nao consegue
 //      seguir ponteiros da CPU, so enxerga memoria contigua que foi
 //      copiada explicitamente para ela.
 //   2. Copiar esse vetor + os centroides para a GPU (cudaMemcpy).

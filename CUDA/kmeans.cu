@@ -12,7 +12,7 @@
 
 // ingest.h, convergence.h e sse.h sao implementados em arquivos .c puro
 // (compilados como C, nao C++). Sem o extern "C" abaixo, o nvcc (que trata
-// .cu como C++) geraria nomes "mangled" diferentes dos simbolos reais
+// .cu como C++) geraria nomes diferentes dos simbolos reais
 // gerados pelo gcc/host compiler para esses .c, e o link falharia.
 extern "C" {
 #include "ingest.h"
@@ -33,7 +33,7 @@ extern "C" {
 // nvcc kmeans.cu ingest.c normalize.cu distance.c centroid.cu cluster.cu convergence.c sse.c -o kmeans_cuda -lm
 
 
-int K_CLUSTERS = 3;       // Quantidade de grupos que queremos encontrar
+int K_CLUSTERS = 3; // Quantidade de grupos que queremos encontrar
 int MAX_ITER_ACOES = 100; // Critério de parada por repetições
 int NUM_FEATURES = 11;    // quantidade de colunas (exceto id e qualidade)
 
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
         MAX_ITER_ACOES = atoi(argv[2]);
     }
 
-    // identificar a GPU usada (util pra colocar no relatorio/slides)
+    // identificar a GPU usada (util pra colocar no slides)
     int device = 0;
     cudaDeviceProp prop;
     CUDA_CHECK(cudaGetDevice(&device));
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
     // aplicar normalizaçao (roda na GPU por dentro, ver normalize.cu)
     normalizarDataset(dataset);
 
-    // inicializar centroide (CPU, igual ao sequencial -- ver centroid.cu)
+    // inicializar centroide (CPU, igual ao sequencial --> ver centroid.cu)
     Centroide *centroides = inicializarCentroides(dataset, K_CLUSTERS);
 
     executarKmeans(dataset, centroides);

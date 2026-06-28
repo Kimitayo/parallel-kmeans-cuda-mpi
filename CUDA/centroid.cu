@@ -10,7 +10,7 @@
 // centroid.cu
 //
 // inicializarCentroides, copiarCentroides e liberarCentroides sao
-// IDENTICAS ao centroid.c sequencial -- sao chamadas poucas vezes (nao
+// IDENTICAS ao centroid.c sequencial --> sao chamadas poucas vezes (nao
 // estao dentro do loop pesado de iteracoes) e trabalham com pouquissimos
 // dados (k centroides), entao nao ha ganho real em colocar na GPU. Mantemos
 // elas em CPU de proposito, pra nao complicar o codigo sem necessidade.
@@ -30,13 +30,7 @@
         }                                                                            \
     } while (0)
 
-// OBS: em CUDA Toolkit 11+/12+, atomicAdd para "double" ja' vem definido
-// pelos headers padrao para qualquer arquitetura de destino (internamente
-// o compilador escolhe a versao nativa em GPUs CC >= 6.0, ou gera o
-// equivalente via atomicCAS em GPUs mais antigas). Se voce estiver usando
-// um Toolkit MUITO antigo (CUDA < 8) e der erro de "atomicAdd nao
-// encontrado", adicione manualmente a versao por atomicCAS descrita na
-// documentacao da NVIDIA (CUDA C Programming Guide, secao B.12).
+
 
 // --------------------- identicas ao sequencial (CPU) ---------------------
 
@@ -109,10 +103,6 @@ void liberarCentroides(Centroide *centroides, int k) {
 
 // --------------------- adaptada para GPU ---------------------
 
-// Kernel: cada thread cuida de UM vinho (mesmo papel da iteracao "i" do
-// for sequencial) e soma suas features no acumulador do cluster ao qual
-// pertence. Usa atomicAdd porque varias threads de clusters diferentes
-// podem escrever na mesma posicao de soma/contagem ao mesmo tempo.
 __global__ void kernelAcumularCentroides(
     const double *features,
     const int *clusterAtual,
@@ -171,7 +161,7 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
     CUDA_CHECK(cudaGetLastError());
     CUDA_CHECK(cudaDeviceSynchronize());
 
-    // ---- trazer soma/contagem de volta (e' pequeno: k*colunas) ----
+    // ---- trazer soma/contagem de volta (e pequeno: k*colunas) ----
     double *h_soma = (double *) malloc((size_t) k * colunas * sizeof(double));
     int *h_contagem = (int *) malloc((size_t) k * sizeof(int));
 
@@ -179,7 +169,7 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
     CUDA_CHECK(cudaMemcpy(h_contagem, d_contagem, (size_t) k * sizeof(int), cudaMemcpyDeviceToHost));
 
     // ---- calcular a media; clusters vazios preservam o centroide anterior
-    //      (sem zerar antes -- um centroide zerado, com dados normalizados
+    //      (sem zerar antes --> um centroide zerado, com dados normalizados
     //      entre 0 e 1, pode atrair pontos artificialmente pra um canto do
     //      espaco de features que nao tem nada a ver com os dados reais) ----
     for (int c = 0; c < k; c++) {

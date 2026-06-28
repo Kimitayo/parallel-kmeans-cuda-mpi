@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 """
-benchmark.py - Roda as versoes do K-means, mede o tempo de execucao e
+benchmark.py -> Roda as versoes do K-means, mede o tempo de execucao e
 calcula speedup/eficiencia em relacao a versao sequencial.
 
-Estrutura de pastas esperada (mesma do repositorio no GitHub):
+Estrutura de pastas esperada:
 
     raiz_do_projeto/
     ├── vinhos.csv
     ├── sequencial/
     ├── Hybrid_MPI_OpenMP/
-    ├── CUDA/                  (opcional -- so' roda se existir e tiver nvcc)
+    ├── CUDA/                  
     └── benchmark.py           <- este arquivo, na raiz
 
 Uso:
     python3 benchmark.py
 
 Saida:
-    resultados.csv  -- uma linha por execucao, com tempo/speedup/eficiencia
+    resultados.csv  --> uma linha por execucao, com tempo/speedup/eficiencia
 """
 
 import csv
@@ -31,31 +31,21 @@ K_CLUSTERS = 3
 MAX_ITER = 100
 REPETICOES = 3  # quantas vezes roda cada configuracao (usamos o melhor tempo, reduz ruido do SO)
 
-# Nome do compilador C a usar. No Linux, "gcc" normal já funciona.
-# No Mac, o "gcc" do sistema é na verdade um disfarce do Apple Clang e NÃO
-# suporta -fopenmp -- troque para o gcc de verdade instalado via Homebrew
-# (ex: "gcc-14"). Veja com `ls /opt/homebrew/bin | grep gcc-`.
-COMPILADOR_C = "gcc-16"
+COMPILADOR_C = "gcc-16" # é o do meu pc, melhor alterar de acordo
 
-# Combinações de processos MPI x threads OpenMP que serao testadas.
-# Ajuste essa lista de acordo com o numero de nucleos da sua maquina/no'.
-# Combinações de processos MPI x threads OpenMP que serao testadas.
-# Ajustado para uma maquina com 8 nucleos: cobre strong scaling de 1 a 8
-# recursos totais (processos x threads), e inclui 1 combinacao alem do
-# limite (8x2=16) de proposito, pra mostrar o efeito de "oversubscription"
-# (competicao por nucleo) no relatorio.
+
 COMBINACOES_MPI_OPENMP = [
     # (processos_mpi, threads_openmp)  -> total de recursos usados
     (1, 1),   # 1  - baseline "paralelo" minimo (so' pra comparar overhead vs sequencial puro)
     (1, 2),   # 2
     (1, 4),   # 4
-    (1, 8),   # 8  - so' OpenMP, sem MPI
+    (1, 8),   # 8  - so OpenMP, sem MPI
     (2, 1),   # 2
     (2, 2),   # 4
     (2, 4),   # 8
     (4, 1),   # 4
     (4, 2),   # 8
-    (8, 1),   # 8  - so' MPI, sem OpenMP
+    (8, 1),   # 8  - so MPI, sem OpenMP
     (8, 2),   # 16 - DE PROPOSITO alem dos 8 nucleos (oversubscription)
 ]
 
@@ -72,7 +62,6 @@ def extrair_tempo(saida_stdout, comando_str):
         print(f"[ERRO] Nao encontrei 'Tempo de execucao' na saida de: {comando_str}")
         print("----- saida completa -----")
         print(saida_stdout)
-        print("---------------------------")
         sys.exit(1)
     return float(m.group(1))
 
@@ -113,9 +102,8 @@ def compilar(comando, cwd, nome_etapa):
 def main():
     linhas_csv = []
 
-    # ------------------------------------------------------------------
+
     # 1) SEQUENCIAL (baseline)
-    # ------------------------------------------------------------------
     pasta_seq = os.path.join(RAIZ, "sequencial")
     if not os.path.isdir(pasta_seq):
         print("[ERRO] Pasta 'sequencial/' nao encontrada na raiz do projeto.")
@@ -142,9 +130,7 @@ def main():
         "eficiencia": 1.0,
     })
 
-    # ------------------------------------------------------------------
     # 2) MPI + OpenMP
-    # ------------------------------------------------------------------
     pasta_hibrida = os.path.join(RAIZ, "Hybrid_MPI_OpenMP")
     if not os.path.isdir(pasta_hibrida):
         print("[AVISO] Pasta 'Hybrid_MPI_OpenMP/' nao encontrada -- pulando essa etapa.")
@@ -188,9 +174,7 @@ def main():
                 "eficiencia": eficiencia,
             })
 
-    # ------------------------------------------------------------------
     # 3) CUDA (so' roda se houver nvcc -- normalmente so' no NPAD)
-    # ------------------------------------------------------------------
     pasta_cuda = os.path.join(RAIZ, "CUDA")
     if not os.path.isdir(pasta_cuda):
         print("\n[AVISO] Pasta 'CUDA/' nao encontrada -- pulando essa etapa.")
@@ -210,9 +194,7 @@ def main():
         tempo = rodar(comando, cwd=pasta_cuda)
 
         speedup = t_sequencial / tempo
-        # Para GPU nao existe um "numero de processadores" equivalente
-        # direto; eficiencia aqui fica registrada como N/A no CSV --
-        # use o speedup absoluto e a comparacao com OpenMP-GPU no relatorio.
+
         print(f"  tempo={tempo:.6f}s  speedup={speedup:.3f}x")
 
         linhas_csv.append({
@@ -225,9 +207,8 @@ def main():
             "eficiencia": "",
         })
 
-    # ------------------------------------------------------------------
-    # Salva o CSV final
-    # ------------------------------------------------------------------
+
+    # Salva o CSV final pra plotar o grafico
     caminho_csv = os.path.join(RAIZ, "resultados.csv")
     campos = ["versao", "processos_mpi", "threads_openmp", "bloco_cuda",
               "tempo_segundos", "speedup", "eficiencia"]

@@ -10,7 +10,7 @@ double calcularSSE(Dataset *dataset, Centroide *centroides) {
         int cluster = dataset->dados[i].cluster;
 
         // distanciaEuclidiana() retorna a distancia AO QUADRADO (sem sqrt,
-        // de proposito -- veja o comentario em distance.c). Como SSE e'
+        // de proposito  Como SSE e
         // "soma das distancias ao quadrado", basta somar direto, sem
         // multiplicar de novo (senao o resultado vira distancia^4).
         double distanciaAoQuadrado = distanciaEuclidiana(dataset->dados[i].features, centroides[cluster].features, dataset->colunas);
