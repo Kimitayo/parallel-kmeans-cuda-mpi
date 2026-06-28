@@ -79,6 +79,9 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
         exit(1);
     }
 
+    // Mapeamento da soma e contagem para a CPU
+    #pragma omp target enter data map(to: contagem[0:k], soma[0:k])
+
     // zera centroides
     for (int c = 0; c < k; c++) {
         for (int f = 0; f < numFeatures; f++) {
@@ -86,17 +89,23 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
         }
     }
 
+
     // soma features dos vinhos
+    #pragma omp target teams distribute parallel for
     for (int i = 0; i < dataset->linhas; i++) {
         int cluster = dataset->dados[i].cluster;
+
+        #pragma omp atomic update
         contagem[cluster]++;
 
         for (int f = 0; f < numFeatures; f++) {
+            #pragma omp atomic update
             soma[cluster][f] += dataset->dados[i].features[f];
         }
     }
 
     // divide pela quantidade
+    #pragma omp target teams distribute parallel for
     for (int c = 0; c < k; c++) {
         if (contagem[c] == 0)
             continue;
@@ -105,6 +114,8 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
             centroides[c].features[f] = soma[c][f] / contagem[c];
         }
     }
+
+    #pragma omp target exit data map(delete: contagem[0:k], soma[0:k])
 
     free(contagem);
     for (int c = 0; c < k; c++) {
