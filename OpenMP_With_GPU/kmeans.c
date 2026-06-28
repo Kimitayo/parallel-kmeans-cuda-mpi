@@ -33,16 +33,12 @@ void liberarDataset(Dataset *dataset) {
     }
 }
 
-
 void executarKmeans(Dataset *dataset, Centroide *centroides) {
     int num_vinhos = dataset->linhas;
     int k = K_CLUSTERS;
     int features = NUM_FEATURES;
 
-
-
-    //  Mapeamento Para A GPU (Device)
-    // Transferimos o array de structs e iteramos para transferir os ponteiros internos
+    //  MAPEAMENTO CORRETO PARA GPU (Pointer Attachment)
     #pragma omp target enter data map(to: dataset[0:1], dataset->dados[0:num_vinhos])
     for(int i = 0; i < num_vinhos; i++) {
         #pragma omp target enter data map(to: dataset->dados[i].features[0:features])
@@ -53,25 +49,20 @@ void executarKmeans(Dataset *dataset, Centroide *centroides) {
         #pragma omp target enter data map(to: centroides[i].features[0:features])
     }
 
-
-    // 2. Loop de convergencia
+    //  Loop de convergencia
     for (int iter = 0; iter < MAX_ITER_ACOES; iter++) {
 
         // guardar os centroides antigos
         Centroide *antigos = copiarCentroides(centroides, K_CLUSTERS, NUM_FEATURES);
 
-        // colocar cluster
+        // colocar cluster e atualizar centroide
         int mudouCluster = atribuirClusters(dataset, centroides, K_CLUSTERS);
-        // atualizar centroide
         atualizarCentroides(dataset, centroides, K_CLUSTERS);
 
-        //  Atualização GPU
-        // Trazer as features atualizadas dos centroides de volpa para a CPU
-        //    para checar a convergência de forma local
+        // Atualização GPU: Trazer apenas as features dos centroides de volta
         for (int i = 0; i < k; i++){
             #pragma omp target update from(centroides[i].features[0:features])
         }
-        
 
         // verificar convergencia
         if (!mudouCluster || convergiu(antigos, centroides, K_CLUSTERS, NUM_FEATURES, 0.0001)) {
@@ -83,7 +74,7 @@ void executarKmeans(Dataset *dataset, Centroide *centroides) {
         liberarCentroides(antigos, K_CLUSTERS);
     }
 
-    // Limpeza Memória
+    //  Limpeza Memória
     for(int i = 0; i < k; i++) {
         #pragma omp target exit data map(delete: centroides[i].features[0:features])
     }
@@ -93,7 +84,6 @@ void executarKmeans(Dataset *dataset, Centroide *centroides) {
         #pragma omp target exit data map(from: dataset->dados[i].cluster) map(delete: dataset->dados[i].features[0:features])
     }
     #pragma omp target exit data map(delete: dataset->dados[0:num_vinhos], dataset[0:1])
-    
 }
 
 
