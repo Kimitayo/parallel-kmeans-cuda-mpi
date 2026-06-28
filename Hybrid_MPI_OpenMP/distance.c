@@ -7,6 +7,10 @@ double distanciaEuclidiana(
     double *ponto2,
     int numFeatures
 ) {
+    // OBS: retorna a distancia EUCLIDIANA AO QUADRADO (sem sqrt) de
+    // proposito -- mesmo motivo da versao sequencial (ver comentario lá):
+    // evita um sqrt() extra por par (ponto, centroide) a cada iteracao,
+    // sem mudar o resultado de "qual centroide esta mais perto".
 
     double soma = 0.0;
 

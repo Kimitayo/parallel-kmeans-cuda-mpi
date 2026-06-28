@@ -14,8 +14,10 @@ double calcularSSE(Dataset *dataset, Centroide *centroides, MPI_Comm comm) {
         int cluster = dataset->dados[i].cluster;
 
         if (cluster >= 0) {
-            double distancia = distanciaEuclidiana(dataset->dados[i].features, centroides[cluster].features, dataset->colunas);
-            sseLocal += distancia * distancia;
+            // distanciaEuclidiana() ja' retorna ao quadrado -- nao multiplicar de novo
+            // (ver mesmo comentario no sse.c da versao sequencial)
+            double distanciaAoQuadrado = distanciaEuclidiana(dataset->dados[i].features, centroides[cluster].features, dataset->colunas);
+            sseLocal += distanciaAoQuadrado;
         }
     }
 
