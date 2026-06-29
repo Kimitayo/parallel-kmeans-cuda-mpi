@@ -6,12 +6,12 @@ Projeto da disciplina **IMD1116 – Computação de Alto Desempenho** (UFRN), fo
 
 ## 👥 Equipe
 
-| Nome | Matrícula |
+| Nome | 
 |---|---|
-| Clara Virgínia Nascimento Santos | 20240002212 |
-| Cleiane Clementino Bondade | 20250050901 |
-| Felipe Augusto Lemos Barreto | 20230032497 |
-| Vinícius Barbosa Ventura Mergulhão | 20230051760 |
+| Clara Virgínia Nascimento Santos | 
+| Cleiane Clementino Bondade | 
+| Felipe Augusto Lemos Barreto | 
+| Vinícius Barbosa Ventura Mergulhão |
 
 ---
 
