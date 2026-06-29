@@ -1,4 +1,3 @@
-```bash
 #!/bin/bash
 #SBATCH --job-name=kmeans_benchmark
 #SBATCH --output=kmeans_benchmark_%j.out
@@ -21,7 +20,6 @@ echo "=========================================="
 
 module purge
 
-# Modulos necessarios para CUDA no NPAD
 module load softwares/tau/2.35.1
 module load cuda/12.6.2-gcc-8.5.0-ehvl44c
 
@@ -71,4 +69,3 @@ if [ -f resultados.csv ]; then
 else
     echo "resultados.csv nao foi gerado."
 fi
-```
