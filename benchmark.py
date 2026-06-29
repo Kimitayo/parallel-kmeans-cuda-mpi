@@ -18,7 +18,7 @@ o OpenMP_With_GPU já mergeados/copiados pra dentro da mesma pasta):
     ├── benchmark.py                <- este arquivo
     ├── sequencial/
     ├── Hybrid_MPI_OpenMP/
-    ├── CUDA/                       (so' roda se existir + tiver nvcc)
+    ├── cuda/                       (so' roda se existir + tiver nvcc)
     └── OpenMP_With_GPU/            (so' roda se existir + tiver nvc, NVIDIA HPC SDK)
 
 IMPORTANTE: este script SUBSTITUI TEMPORARIAMENTE o conteudo do vinhos.csv
@@ -321,18 +321,19 @@ def main():
         # ===================================================================
         print("\n\n########## ESCALABILIDADE FRACA (tamanho varia com os recursos) ##########")
 
-        pasta_cuda = os.path.join(RAIZ, "CUDA")
+        pasta_cuda = os.path.join(RAIZ, "cuda")
         tem_cuda = os.path.isdir(pasta_cuda) and tem_comando("nvcc")
         if os.path.isdir(pasta_cuda) and tem_comando("nvcc"):
             compilar(
                 ["nvcc", "-O2", "-rdc=true", "-arch=" + CUDA_ARCH,
-                 "kmeans.cu", "ingest.c", "normalize.cu", "distance.c",
-                 "centroid.cu", "cluster.cu", "convergence.c", "sse.c",
+                 "cluster.cu", "distance.cu", "centroid.cu", "convergence.cu",
+                 "cuda_utils.cu", "flatten.cu", "ingest.cu", "normalize.cu",
+                 "sse.cu", "kmeans.cu",
                  "-o", "kmeans_cuda", "-lm"],
                 cwd=pasta_cuda, nome_etapa="CUDA"
             )
         elif os.path.isdir(pasta_cuda):
-            print("[AVISO] Pasta 'CUDA/' existe mas nvcc nao foi encontrado -- pulando CUDA.")
+            print("[AVISO] Pasta 'cuda/' existe mas nvcc nao foi encontrado -- pulando CUDA.")
 
         pasta_gpu_omp = os.path.join(RAIZ, "OpenMP_With_GPU")
         tem_gpu_omp = os.path.isdir(pasta_gpu_omp) and tem_comando("nvc")

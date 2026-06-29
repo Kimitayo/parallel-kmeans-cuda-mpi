@@ -15,7 +15,9 @@ Centroide* inicializarCentroides(Dataset *dataset, int k) {
     }
 
     // inicializa com seed aleatoria
-    srand(time(NULL));
+    // Semente FIXA -- necessaria para benchmarking justo entre as 4 versoes
+    // (todas devem partir dos mesmos centroides iniciais)
+    srand(42);
 
     // Para cada centroide
     for (int i = 0; i < k; i++) {
@@ -79,13 +81,6 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
         exit(1);
     }
 
-    // zera centroides
-    for (int c = 0; c < k; c++) {
-        for (int f = 0; f < numFeatures; f++) {
-            centroides[c].features[f] = 0.0;
-        }
-    }
-
     // soma features dos vinhos
     for (int i = 0; i < dataset->linhas; i++) {
         int cluster = dataset->dados[i].cluster;
@@ -96,7 +91,9 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
         }
     }
 
-    // divide pela quantidade
+    // divide pela quantidade; clusters vazios preservam o centroide anterior
+    // (sem zerar antes -- um centroide zerado, com dados normalizados entre
+    // 0 e 1, pode atrair pontos artificialmente)
     for (int c = 0; c < k; c++) {
         if (contagem[c] == 0)
             continue;

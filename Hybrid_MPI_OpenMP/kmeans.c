@@ -317,7 +317,8 @@ int main(int argc, char *argv[]) {
                 0, MPI_COMM_WORLD);
 
     if (rank == 0) {
-        srand(time(NULL));
+        // Semente FIXA -- necessaria para benchmarking justo entre as 4 versoes
+        srand(42);
 
         for (int c = 0; c < K_CLUSTERS; c++) {
             int indiceAleatorio = rand() % totalLinhas;
