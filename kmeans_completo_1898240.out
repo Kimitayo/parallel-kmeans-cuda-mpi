@@ -1,0 +1,540 @@
+==========================================
+Rodando no host: gpunode1.npad.internal
+Job ID: 1898240
+Diretorio: /home/cvnsantos/1
+Inicio: seg jun 29 19:01:16 -03 2026
+==========================================
+
+========== PARTE 1: Sequencial + MPI/OpenMP + CUDA ==========
+
+Modulos da parte 1:
+
+Currently Loaded Modules:
+  1) zlib-ng/2.2.1-gcc-8.5.0-nx3ks4o
+  2) zstd/1.5.6-gcc-8.5.0-5rab3qi
+  3) binutils/2.43.1-gcc-12.3.0-yjinuj6
+  4) libiconv/1.17-gcc-8.5.0-aljgrlp
+  5) xz/5.4.6-gcc-8.5.0-lljp7gg
+  6) libxml2/2.13.4-gcc-8.5.0-judzn6c
+  7) bzip2/1.0.8-gcc-8.5.0-lvokl5n
+  8) ncurses/6.5-gcc-8.5.0-wksarjv
+  9) pigz/2.8-gcc-8.5.0-32th6mj
+ 10) tar/1.34-gcc-8.5.0-x3eo6ne
+ 11) gettext/0.22.5-gcc-8.5.0-4ok7q66
+ 12) pkgconf/2.2.0-gcc-8.5.0-6pwk6kx
+ 13) elfutils/0.191-gcc-12.3.0-phhsnom
+ 14) libpciaccess/0.17-gcc-8.5.0-rmvwow4
+ 15) hwloc/2.11.1-gcc-8.5.0-lfxwh4q
+ 16) libdwarf/0.11.0-gcc-12.3.0-ltf2555
+ 17) libunwind/1.8.1-gcc-12.3.0-fy6kyfb
+ 18) openjdk/17.0.11_9-gcc-12.3.0-onok5ha
+ 19) openssl/3.4.0-gcc-8.5.0-v5gkkke
+ 20) libevent/2.1.12-gcc-8.5.0-d4qlhu4
+ 21) numactl/2.0.18-gcc-8.5.0-uqgd3rr
+ 22) krb5/1.21.3-gcc-8.5.0-m2fr6gr
+ 23) libedit/3.1-20240808-gcc-8.5.0-z4vl4qd
+ 24) libxcrypt/4.4.35-gcc-8.5.0-3o7er2x
+ 25) openssh/9.9p1-gcc-8.5.0-f4kn7z7
+ 26) pmix/5.0.3-gcc-8.5.0-lwlah4q
+ 27) openmpi/4.1.6-gcc-12.3.0-6rgnzbn
+ 28) libmd/1.0.4-gcc-8.5.0-6hubecx
+ 29) libbsd/0.12.2-gcc-8.5.0-gozzinq
+ 30) expat/2.6.4-gcc-8.5.0-licbhdn
+ 31) readline/8.2-gcc-8.5.0-tchyvju
+ 32) gdbm/1.23-gcc-8.5.0-swdhtug
+ 33) libffi/3.4.6-gcc-8.5.0-ohhcpk2
+ 34) sqlite/3.46.0-gcc-8.5.0-sxxfpax
+ 35) util-linux-uuid/2.40.2-gcc-8.5.0-ptgg4uv
+ 36) python/3.11.9-gcc-12.3.0-egxne7o
+ 37) gcc-runtime/12.3.0-gcc-12.3.0-4qxguxv
+ 38) python-venv/1.0-gcc-12.3.0-7dzgezw
+ 39) otf2/3.0.3-gcc-12.3.0-4k2hagi
+ 40) papi/7.1.0-gcc-12.3.0-x2goddi
+ 41) pdt/3.25.2-gcc-12.3.0-stwcgu7
+ 42) tau/2.35.1-gcc-12.3.0-ss4u6t2
+ 43) softwares/tau/2.35.1
+ 44) glibc/2.28-gcc-8.5.0-vqttnls
+ 45) cuda/12.6.2-gcc-8.5.0-ehvl44c
+
+ 
+
+
+GPU:
+name, memory.total [MiB], compute_cap
+Tesla V100-SXM2-16GB, 16384 MiB, 7.0
+
+Rodando benchmark.py (Sequencial + MPI/OpenMP + CUDA)...
+Dataset oficial: 106497 linhas (sera preservado; o script restaura no final)
+
+Niveis de recurso para escalabilidade fraca -> tamanho de dataset:
+  1 recurso(s) -> 6656 linhas
+  2 recurso(s) -> 13312 linhas
+  4 recurso(s) -> 26624 linhas
+  8 recurso(s) -> 53248 linhas
+  16 recurso(s) -> 106497 linhas
+
+Compilando SEQUENCIAL...
+  -> OK
+
+=== SEQUENCIAL | tamanho oficial (106497 linhas) ===
+    tentativa 1/5: 0.451980s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.425963s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.427800s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.448106s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.448318s  SSE=9290.0654  iter=61
+    -> media: 0.440433s
+Compilando MPI + OpenMP...
+  -> OK
+
+--- Escalabilidade FORTE (tamanho fixo = 106497 linhas) ---
+
+=== MPI+OpenMP [FORTE] | processos=1 threads=1 (tamanho=106497) ===
+    tentativa 1/5: 0.411413s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.409352s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.408521s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.409949s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.409465s  SSE=9290.0654  iter=61
+    -> media: 0.409740s
+  speedup=1.075x  eficiencia=107.5%
+
+=== MPI+OpenMP [FORTE] | processos=2 threads=1 (tamanho=106497) ===
+    tentativa 1/5: 0.307099s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.323964s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.300140s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.299313s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.307819s  SSE=9290.0654  iter=61
+    -> media: 0.307667s
+  speedup=1.432x  eficiencia=71.6%
+
+=== MPI+OpenMP [FORTE] | processos=1 threads=2 (tamanho=106497) ===
+    tentativa 1/5: 0.401678s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.398917s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.401809s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.401324s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.400974s  SSE=9290.0654  iter=61
+    -> media: 0.400940s
+  speedup=1.099x  eficiencia=54.9%
+
+=== MPI+OpenMP [FORTE] | processos=4 threads=1 (tamanho=106497) ===
+    tentativa 1/5: 0.284241s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.342391s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.280418s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.284218s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.285129s  SSE=9290.0654  iter=61
+    -> media: 0.295279s
+  speedup=1.492x  eficiencia=37.3%
+
+=== MPI+OpenMP [FORTE] | processos=1 threads=4 (tamanho=106497) ===
+    tentativa 1/5: 0.403750s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.404530s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.406068s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.404442s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.404664s  SSE=9290.0654  iter=61
+    -> media: 0.404691s
+  speedup=1.088x  eficiencia=27.2%
+
+=== MPI+OpenMP [FORTE] | processos=2 threads=2 (tamanho=106497) ===
+    tentativa 1/5: 0.305092s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.303369s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.307144s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.306581s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.301787s  SSE=9290.0654  iter=61
+    -> media: 0.304795s
+  speedup=1.445x  eficiencia=36.1%
+
+=== MPI+OpenMP [FORTE] | processos=8 threads=1 (tamanho=106497) ===
+    tentativa 1/5: 0.250568s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.248673s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.250589s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.250427s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.250119s  SSE=9290.0654  iter=61
+    -> media: 0.250075s
+  speedup=1.761x  eficiencia=22.0%
+
+=== MPI+OpenMP [FORTE] | processos=1 threads=8 (tamanho=106497) ===
+    tentativa 1/5: 0.413476s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.412451s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.411610s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.412030s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.413996s  SSE=9290.0654  iter=61
+    -> media: 0.412713s
+  speedup=1.067x  eficiencia=13.3%
+
+=== MPI+OpenMP [FORTE] | processos=4 threads=2 (tamanho=106497) ===
+    tentativa 1/5: 0.290850s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.287755s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.293787s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.288993s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.288189s  SSE=9290.0654  iter=61
+    -> media: 0.289915s
+  speedup=1.519x  eficiencia=19.0%
+
+=== MPI+OpenMP [FORTE] | processos=16 threads=1 (tamanho=106497) ===
+    tentativa 1/5: 0.334475s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.329239s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.230171s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.230669s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.231346s  SSE=9290.0654  iter=61
+    -> media: 0.271180s
+  speedup=1.624x  eficiencia=10.2%
+
+=== MPI+OpenMP [FORTE] | processos=1 threads=16 (tamanho=106497) ===
+    tentativa 1/5: 0.429222s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.430514s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.427940s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.427430s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.430185s  SSE=9290.0654  iter=61
+    -> media: 0.429058s
+  speedup=1.027x  eficiencia=6.4%
+
+=== MPI+OpenMP [FORTE] | processos=8 threads=2 (tamanho=106497) ===
+    tentativa 1/5: 0.251583s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.250019s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.252527s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.253778s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.250213s  SSE=9290.0654  iter=61
+    -> media: 0.251624s
+  speedup=1.750x  eficiencia=10.9%
+
+=== MPI+OpenMP [FORTE] | processos=32 threads=1 (tamanho=106497) ===
+    tentativa 1/5: 0.396531s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.393985s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.394868s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.394207s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.396474s  SSE=9290.0654  iter=61
+    -> media: 0.395213s
+  speedup=1.114x  eficiencia=3.5%
+
+=== MPI+OpenMP [FORTE] | processos=1 threads=32 (tamanho=106497) ===
+    tentativa 1/5: 0.466738s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.467735s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.468323s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.466101s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.471230s  SSE=9290.0654  iter=61
+    -> media: 0.468025s
+  speedup=0.941x  eficiencia=2.9%
+
+=== MPI+OpenMP [FORTE] | processos=16 threads=2 (tamanho=106497) ===
+    tentativa 1/5: 0.286724s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.238196s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.247019s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.357306s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.238787s  SSE=9290.0654  iter=61
+    -> media: 0.273606s
+  speedup=1.610x  eficiencia=5.0%
+
+=== MPI+OpenMP [FORTE] | processos=32 threads=2 (tamanho=106497) ===
+    tentativa 1/5: 2.712830s  SSE=9290.0654  iter=61
+    tentativa 2/5: 2.717746s  SSE=9290.0654  iter=61
+    tentativa 3/5: 2.725045s  SSE=9290.0654  iter=61
+    tentativa 4/5: 2.701452s  SSE=9290.0654  iter=61
+    tentativa 5/5: 2.735700s  SSE=9290.0654  iter=61
+    -> media: 2.718555s
+  speedup=0.162x  eficiencia=0.3%
+
+
+########## ESCALABILIDADE FRACA (tamanho varia com os recursos) ##########
+Compilando CUDA...
+  -> OK
+[AVISO] Pasta 'OpenMP_With_GPU/' existe mas 'nvc' (NVIDIA HPC SDK) nao foi encontrado -- pulando OpenMP-GPU. Confirme 'module load' no job SLURM.
+
+----- Tamanho desta rodada: 6656 linhas (nivel de recurso=1) -----
+
+=== Sequencial [FRACA] | tamanho=6656 ===
+    tentativa 1/5: 0.022215s  SSE=724.2656  iter=32
+    tentativa 2/5: 0.021633s  SSE=724.2656  iter=32
+    tentativa 3/5: 0.021337s  SSE=724.2656  iter=32
+    tentativa 4/5: 0.021307s  SSE=724.2656  iter=32
+    tentativa 5/5: 0.021666s  SSE=724.2656  iter=32
+    -> media: 0.021632s
+
+=== MPI+OpenMP [FRACA] | processos=1 threads=1 | tamanho=6656 ===
+    tentativa 1/5: 0.019927s  SSE=724.2656  iter=32
+    tentativa 2/5: 0.019616s  SSE=724.2656  iter=32
+    tentativa 3/5: 0.019614s  SSE=724.2656  iter=32
+    tentativa 4/5: 0.019689s  SSE=724.2656  iter=32
+    tentativa 5/5: 0.019613s  SSE=724.2656  iter=32
+    -> media: 0.019692s
+  speedup=1.099x  eficiencia=109.9% (ideal p/ weak scaling: eficiencia ~100%)
+
+=== CUDA | tamanho=6656 ===
+    tentativa 1/5: 0.025532s  SSE=724.2656  iter=32
+    tentativa 2/5: 0.024233s  SSE=724.2656  iter=32
+    tentativa 3/5: 0.025329s  SSE=724.2656  iter=32
+    tentativa 4/5: 0.023085s  SSE=724.2656  iter=32
+    tentativa 5/5: 0.023240s  SSE=724.2656  iter=32
+    -> media: 0.024284s
+
+----- Tamanho desta rodada: 13312 linhas (nivel de recurso=2) -----
+
+=== Sequencial [FRACA] | tamanho=13312 ===
+    tentativa 1/5: 0.040950s  SSE=1167.3735  iter=31
+    tentativa 2/5: 0.040305s  SSE=1167.3735  iter=31
+    tentativa 3/5: 0.040165s  SSE=1167.3735  iter=31
+    tentativa 4/5: 0.041531s  SSE=1167.3735  iter=31
+    tentativa 5/5: 0.041236s  SSE=1167.3735  iter=31
+    -> media: 0.040837s
+
+=== MPI+OpenMP [FRACA] | processos=2 threads=1 | tamanho=13312 ===
+    tentativa 1/5: 0.031874s  SSE=1167.3735  iter=31
+    tentativa 2/5: 0.031586s  SSE=1167.3735  iter=31
+    tentativa 3/5: 0.031407s  SSE=1167.3735  iter=31
+    tentativa 4/5: 0.031347s  SSE=1167.3735  iter=31
+    tentativa 5/5: 0.031940s  SSE=1167.3735  iter=31
+    -> media: 0.031631s
+  speedup=1.291x  eficiencia=64.6% (ideal p/ weak scaling: eficiencia ~100%)
+
+=== CUDA | tamanho=13312 ===
+    tentativa 1/5: 0.266737s  SSE=1167.3742  iter=27
+    tentativa 2/5: 0.269460s  SSE=1167.3742  iter=27
+    tentativa 3/5: 0.335527s  SSE=1167.3742  iter=27
+    tentativa 4/5: 0.265296s  SSE=1167.3742  iter=27
+    tentativa 5/5: 0.199323s  SSE=1167.3742  iter=27
+    -> media: 0.267269s
+
+----- Tamanho desta rodada: 26624 linhas (nivel de recurso=4) -----
+
+=== Sequencial [FRACA] | tamanho=26624 ===
+    tentativa 1/5: 0.140777s  SSE=2322.4662  iter=81
+    tentativa 2/5: 0.136788s  SSE=2322.4662  iter=81
+    tentativa 3/5: 0.136766s  SSE=2322.4662  iter=81
+    tentativa 4/5: 0.136145s  SSE=2322.4662  iter=81
+    tentativa 5/5: 0.136554s  SSE=2322.4662  iter=81
+    -> media: 0.137406s
+
+=== MPI+OpenMP [FRACA] | processos=4 threads=1 | tamanho=26624 ===
+    tentativa 1/5: 0.078934s  SSE=2322.4662  iter=81
+    tentativa 2/5: 0.078804s  SSE=2322.4662  iter=81
+    tentativa 3/5: 0.079632s  SSE=2322.4662  iter=81
+    tentativa 4/5: 0.079229s  SSE=2322.4662  iter=81
+    tentativa 5/5: 0.076985s  SSE=2322.4662  iter=81
+    -> media: 0.078717s
+  speedup=1.746x  eficiencia=43.6% (ideal p/ weak scaling: eficiencia ~100%)
+
+=== CUDA | tamanho=26624 ===
+    tentativa 1/5: 0.735603s  SSE=2322.4681  iter=74
+    tentativa 2/5: 0.734648s  SSE=2322.4681  iter=74
+    tentativa 3/5: 0.725741s  SSE=2322.4681  iter=74
+    tentativa 4/5: 0.725225s  SSE=2322.4681  iter=74
+    tentativa 5/5: 0.723822s  SSE=2322.4681  iter=74
+    -> media: 0.729008s
+
+----- Tamanho desta rodada: 53248 linhas (nivel de recurso=8) -----
+
+=== Sequencial [FRACA] | tamanho=53248 ===
+    tentativa 1/5: 0.134764s  SSE=4736.3675  iter=20
+    tentativa 2/5: 0.133252s  SSE=4736.3675  iter=20
+    tentativa 3/5: 0.129773s  SSE=4736.3675  iter=20
+    tentativa 4/5: 0.132699s  SSE=4736.3675  iter=20
+    tentativa 5/5: 0.129760s  SSE=4736.3675  iter=20
+    -> media: 0.132050s
+
+=== MPI+OpenMP [FRACA] | processos=8 threads=1 | tamanho=53248 ===
+    tentativa 1/5: 0.113253s  SSE=4736.3675  iter=20
+    tentativa 2/5: 0.117208s  SSE=4736.3675  iter=20
+    tentativa 3/5: 0.171451s  SSE=4736.3675  iter=20
+    tentativa 4/5: 0.113278s  SSE=4736.3675  iter=20
+    tentativa 5/5: 0.112814s  SSE=4736.3675  iter=20
+    -> media: 0.125601s
+  speedup=1.051x  eficiencia=13.1% (ideal p/ weak scaling: eficiencia ~100%)
+
+=== CUDA | tamanho=53248 ===
+    tentativa 1/5: 0.106803s  SSE=4736.3685  iter=14
+    tentativa 2/5: 0.106359s  SSE=4736.3685  iter=14
+    tentativa 3/5: 0.106187s  SSE=4736.3685  iter=14
+    tentativa 4/5: 0.106352s  SSE=4736.3685  iter=14
+    tentativa 5/5: 0.106224s  SSE=4736.3685  iter=14
+    -> media: 0.106385s
+
+----- Tamanho desta rodada: 106497 linhas (nivel de recurso=16) -----
+
+=== Sequencial [FRACA] | tamanho=106497 ===
+    tentativa 1/5: 0.475319s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.428558s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.439241s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.430999s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.450791s  SSE=9290.0654  iter=61
+    -> media: 0.444982s
+
+=== MPI+OpenMP [FRACA] | processos=16 threads=1 | tamanho=106497 ===
+    tentativa 1/5: 0.291853s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.229649s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.233451s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.230089s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.243929s  SSE=9290.0654  iter=61
+    -> media: 0.245794s
+  speedup=1.810x  eficiencia=11.3% (ideal p/ weak scaling: eficiencia ~100%)
+
+=== CUDA | tamanho=106497 ===
+    tentativa 1/5: 0.393174s  SSE=9290.0775  iter=32
+    tentativa 2/5: 0.393781s  SSE=9290.0775  iter=32
+    tentativa 3/5: 0.393934s  SSE=9290.0775  iter=32
+    tentativa 4/5: 0.391519s  SSE=9290.0775  iter=32
+    tentativa 5/5: 0.394775s  SSE=9290.0775  iter=32
+    -> media: 0.393437s
+
+(vinhos.csv restaurado para o conteudo oficial original)
+
+✅ Resultados salvos em: /home/cvnsantos/1/resultados.csv
+   (32 linhas no total)
+
+========== PARTE 2: OpenMP-GPU com nvc ==========
+
+Modulos da parte 2:
+
+Currently Loaded Modules:
+  1) zlib-ng/2.2.1-gcc-8.5.0-nx3ks4o
+  2) zstd/1.5.6-gcc-8.5.0-5rab3qi
+  3) binutils/2.43.1-gcc-12.3.0-yjinuj6
+  4) libiconv/1.17-gcc-8.5.0-aljgrlp
+  5) xz/5.4.6-gcc-8.5.0-lljp7gg
+  6) libxml2/2.13.4-gcc-8.5.0-judzn6c
+  7) bzip2/1.0.8-gcc-8.5.0-lvokl5n
+  8) ncurses/6.5-gcc-8.5.0-wksarjv
+  9) pigz/2.8-gcc-8.5.0-32th6mj
+ 10) tar/1.34-gcc-8.5.0-x3eo6ne
+ 11) gettext/0.22.5-gcc-8.5.0-4ok7q66
+ 12) pkgconf/2.2.0-gcc-8.5.0-6pwk6kx
+ 13) elfutils/0.191-gcc-12.3.0-phhsnom
+ 14) libpciaccess/0.17-gcc-8.5.0-rmvwow4
+ 15) hwloc/2.11.1-gcc-8.5.0-lfxwh4q
+ 16) libdwarf/0.11.0-gcc-12.3.0-ltf2555
+ 17) libunwind/1.8.1-gcc-12.3.0-fy6kyfb
+ 18) openjdk/17.0.11_9-gcc-12.3.0-onok5ha
+ 19) openssl/3.4.0-gcc-8.5.0-v5gkkke
+ 20) libevent/2.1.12-gcc-8.5.0-d4qlhu4
+ 21) numactl/2.0.18-gcc-8.5.0-uqgd3rr
+ 22) krb5/1.21.3-gcc-8.5.0-m2fr6gr
+ 23) libedit/3.1-20240808-gcc-8.5.0-z4vl4qd
+ 24) libxcrypt/4.4.35-gcc-8.5.0-3o7er2x
+ 25) openssh/9.9p1-gcc-8.5.0-f4kn7z7
+ 26) pmix/5.0.3-gcc-8.5.0-lwlah4q
+ 27) openmpi/4.1.6-gcc-12.3.0-6rgnzbn
+ 28) libmd/1.0.4-gcc-8.5.0-6hubecx
+ 29) libbsd/0.12.2-gcc-8.5.0-gozzinq
+ 30) expat/2.6.4-gcc-8.5.0-licbhdn
+ 31) readline/8.2-gcc-8.5.0-tchyvju
+ 32) gdbm/1.23-gcc-8.5.0-swdhtug
+ 33) libffi/3.4.6-gcc-8.5.0-ohhcpk2
+ 34) sqlite/3.46.0-gcc-8.5.0-sxxfpax
+ 35) util-linux-uuid/2.40.2-gcc-8.5.0-ptgg4uv
+ 36) python/3.11.9-gcc-12.3.0-egxne7o
+ 37) gcc-runtime/12.3.0-gcc-12.3.0-4qxguxv
+ 38) python-venv/1.0-gcc-12.3.0-7dzgezw
+ 39) otf2/3.0.3-gcc-12.3.0-4k2hagi
+ 40) papi/7.1.0-gcc-12.3.0-x2goddi
+ 41) pdt/3.25.2-gcc-12.3.0-stwcgu7
+ 42) tau/2.35.1-gcc-12.3.0-ss4u6t2
+ 43) softwares/tau/2.35.1
+ 44) glibc/2.28-gcc-8.5.0-vqttnls
+ 45) cuda/12.6.2-gcc-8.5.0-ehvl44c
+ 46) compilers/nvidia/nvhpc/24.11
+
+ 
+
+
+Verificando nvc:
+/opt/npad/shared/compilers/nvidia_hpc_sdk/24.11/Linux_x86_64/24.11/compilers/bin/nvc
+
+nvc 24.11-0 64-bit target on x86-64 Linux -tp broadwell 
+NVIDIA Compilers and Tools
+Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+
+Entrando em OpenMP_With_GPU...
+
+Compilando OpenMP-GPU...
+
+Voltando para a raiz do projeto...
+
+Rodando OpenMP-GPU nos mesmos 5 tamanhos do CUDA/MPI+OpenMP...
+(nao precisa do nvhpc carregado para EXECUTAR, so' precisou dele para compilar)
+Dataset oficial: 106497 linhas
+Tamanhos a testar: [6656, 13312, 26624, 53248, 106497]
+
+
+=== OpenMP-GPU | tamanho=6656 (nivel=1) ===
+    tentativa 1/5: 0.285907s  SSE=724.2656  iter=32
+    tentativa 2/5: 0.278105s  SSE=724.2656  iter=32
+    tentativa 3/5: 0.270265s  SSE=724.2656  iter=32
+    tentativa 4/5: 0.283117s  SSE=724.2656  iter=32
+    tentativa 5/5: 0.272598s  SSE=724.2656  iter=32
+  speedup=0.078x (vs sequencial nesse tamanho)
+
+=== OpenMP-GPU | tamanho=13312 (nivel=2) ===
+    tentativa 1/5: 0.294700s  SSE=1167.3735  iter=31
+    tentativa 2/5: 0.304241s  SSE=1167.3735  iter=31
+    tentativa 3/5: 0.293852s  SSE=1167.3735  iter=31
+    tentativa 4/5: 0.294288s  SSE=1167.3735  iter=31
+    tentativa 5/5: 0.293218s  SSE=1167.3735  iter=31
+  speedup=0.138x (vs sequencial nesse tamanho)
+
+=== OpenMP-GPU | tamanho=26624 (nivel=4) ===
+    tentativa 1/5: 0.357484s  SSE=2322.4662  iter=81
+    tentativa 2/5: 0.353703s  SSE=2322.4662  iter=81
+    tentativa 3/5: 0.368769s  SSE=2322.4662  iter=81
+    tentativa 4/5: 0.365427s  SSE=2322.4662  iter=81
+    tentativa 5/5: 0.364954s  SSE=2322.4662  iter=81
+  speedup=0.380x (vs sequencial nesse tamanho)
+
+=== OpenMP-GPU | tamanho=53248 (nivel=8) ===
+    tentativa 1/5: 0.427919s  SSE=4736.3675  iter=20
+    tentativa 2/5: 0.419624s  SSE=4736.3675  iter=20
+    tentativa 3/5: 0.420963s  SSE=4736.3675  iter=20
+    tentativa 4/5: 0.418084s  SSE=4736.3675  iter=20
+    tentativa 5/5: 0.420880s  SSE=4736.3675  iter=20
+  speedup=0.313x (vs sequencial nesse tamanho)
+
+=== OpenMP-GPU | tamanho=106497 (nivel=16) ===
+    tentativa 1/5: 0.614990s  SSE=9290.0654  iter=61
+    tentativa 2/5: 0.605324s  SSE=9290.0654  iter=61
+    tentativa 3/5: 0.612314s  SSE=9290.0654  iter=61
+    tentativa 4/5: 0.593293s  SSE=9290.0654  iter=61
+    tentativa 5/5: 0.612302s  SSE=9290.0654  iter=61
+  speedup=0.732x (vs sequencial nesse tamanho)
+
+(vinhos.csv restaurado para o conteudo oficial original)
+
+✅ 5 linhas do OpenMP-GPU adicionadas a: /home/cvnsantos/1/resultados.csv
+
+========== RESULTADOS FINAIS ==========
+versao,escalabilidade,processos_mpi,threads_openmp,linhas_dataset,tempo_segundos,speedup,eficiencia,sse_medio,iteracoes_medias
+Sequencial,forte,1,1,106497,0.440433,1.0,1.0,9290.065373,61.0
+MPI+OpenMP,forte,1,1,106497,0.40974,1.0749,1.0749,9290.065373,61.0
+MPI+OpenMP,forte,2,1,106497,0.307667,1.4315,0.7158,9290.065373,61.0
+MPI+OpenMP,forte,1,2,106497,0.40094,1.0985,0.5493,9290.065373,61.0
+MPI+OpenMP,forte,4,1,106497,0.295279,1.4916,0.3729,9290.065373,61.0
+MPI+OpenMP,forte,1,4,106497,0.404691,1.0883,0.2721,9290.065373,61.0
+MPI+OpenMP,forte,2,2,106497,0.304795,1.445,0.3613,9290.065373,61.0
+MPI+OpenMP,forte,8,1,106497,0.250075,1.7612,0.2202,9290.065373,61.0
+MPI+OpenMP,forte,1,8,106497,0.412713,1.0672,0.1334,9290.065373,61.0
+MPI+OpenMP,forte,4,2,106497,0.289915,1.5192,0.1899,9290.065373,61.0
+MPI+OpenMP,forte,16,1,106497,0.27118,1.6241,0.1015,9290.065373,61.0
+MPI+OpenMP,forte,1,16,106497,0.429058,1.0265,0.0642,9290.065373,61.0
+MPI+OpenMP,forte,8,2,106497,0.251624,1.7504,0.1094,9290.065373,61.0
+MPI+OpenMP,forte,32,1,106497,0.395213,1.1144,0.0348,9290.065373,61.0
+MPI+OpenMP,forte,1,32,106497,0.468025,0.941,0.0294,9290.065373,61.0
+MPI+OpenMP,forte,16,2,106497,0.273606,1.6097,0.0503,9290.065373,61.0
+MPI+OpenMP,forte,32,2,106497,2.718555,0.162,0.0025,9290.065373,61.0
+Sequencial,fraca,1,1,6656,0.021632,1.0,1.0,724.265584,32.0
+MPI+OpenMP,fraca,1,1,6656,0.019692,1.0985,1.0985,724.265584,32.0
+CUDA,fraca,,,6656,0.024284,0.8908,0.8908,724.265584,32.0
+Sequencial,fraca,1,1,13312,0.040837,1.0,1.0,1167.373491,31.0
+MPI+OpenMP,fraca,2,1,13312,0.031631,1.2911,0.6455,1167.373491,31.0
+CUDA,fraca,,,13312,0.267269,0.1528,0.1528,1167.374163,27.0
+Sequencial,fraca,1,1,26624,0.137406,1.0,1.0,2322.466161,81.0
+MPI+OpenMP,fraca,4,1,26624,0.078717,1.7456,0.4364,2322.466161,81.0
+CUDA,fraca,,,26624,0.729008,0.1885,0.1885,2322.468098,74.0
+Sequencial,fraca,1,1,53248,0.13205,1.0,1.0,4736.367462,20.0
+MPI+OpenMP,fraca,8,1,53248,0.125601,1.0513,0.1314,4736.367462,20.0
+CUDA,fraca,,,53248,0.106385,1.2412,1.2412,4736.368532,14.0
+Sequencial,fraca,1,1,106497,0.444982,1.0,1.0,9290.065373,61.0
+MPI+OpenMP,fraca,16,1,106497,0.245794,1.8104,0.1131,9290.065373,61.0
+CUDA,fraca,,,106497,0.393437,1.131,1.131,9290.07749,32.0
+OpenMP-GPU,fraca,,,6656,0.277998,0.0778,0.0778,724.265584,32.0
+OpenMP-GPU,fraca,,,13312,0.29606,0.1379,0.1379,1167.373491,31.0
+OpenMP-GPU,fraca,,,26624,0.362067,0.3795,0.3795,2322.466161,81.0
+OpenMP-GPU,fraca,,,53248,0.421494,0.3133,0.3133,4736.367462,20.0
+OpenMP-GPU,fraca,,,106497,0.607645,0.7323,0.7323,9290.065373,61.0
+
+Fim: seg jun 29 19:03:22 -03 2026
+==========================================
