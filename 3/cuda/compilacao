@@ -1,0 +1,1 @@
+nvcc -arch=sm_75 -rdc=true cluster.cu distance.cu centroid.cu convergence.cu cuda_utils.cu flatten.cu ingest.cu normalize.cu sse.cu kmeans.cu -o kmeans -lm
