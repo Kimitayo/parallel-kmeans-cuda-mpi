@@ -109,6 +109,8 @@ COMBINACOES_STRONG = gerar_combinacoes_strong_scaling(NUCLEOS_NO)
 NIVEIS_WEAK = [n for n in (1, 2, 4, 8, 16) if n <= NUCLEOS_NO]
 
 TEMPO_REGEX = re.compile(r"Tempo de execucao:\s*([\d.,]+)\s*segundos")
+SSE_REGEX = re.compile(r"Qualidade do agrupamento \(SSE\):\s*([\d.,]+)")
+ITER_REGEX = re.compile(r"Convergiu na iteracao\s*(\d+)")
 
 
 # ---------------------------------------------------------------------------
@@ -169,9 +171,29 @@ def extrair_tempo(saida_stdout, comando_str):
     return float(m.group(1).replace(",", "."))
 
 
+def extrair_sse(saida_stdout):
+    """Retorna o SSE como float, ou None se nao encontrar (nao trata como
+    erro fatal -- SSE e' so' para validacao cruzada, nao essencial)."""
+    m = SSE_REGEX.search(saida_stdout)
+    if not m:
+        return None
+    return float(m.group(1).replace(",", "."))
+
+
+def extrair_iteracoes(saida_stdout):
+    m = ITER_REGEX.search(saida_stdout)
+    if not m:
+        return None
+    return int(m.group(1))
+
+
 def rodar(comando, cwd, env=None, repeticoes=REPETICOES):
-    """Roda o comando `repeticoes` vezes e retorna a MEDIA dos tempos."""
+    """Roda o comando `repeticoes` vezes e retorna (tempo_medio, sse_medio,
+    iteracoes_media). sse/iteracoes podem vir como None se o programa nao
+    imprimir esses dados (nao e' erro fatal, so' fica de fora do CSV)."""
     tempos = []
+    sses = []
+    iteracoes_lista = []
     comando_str = " ".join(comando)
 
     for i in range(repeticoes):
@@ -187,12 +209,37 @@ def rodar(comando, cwd, env=None, repeticoes=REPETICOES):
             sys.exit(1)
 
         tempo = extrair_tempo(resultado.stdout, comando_str)
-        tempos.append(tempo)
-        print("    tentativa %d/%d: %.6fs" % (i + 1, repeticoes, tempo))
+        sse = extrair_sse(resultado.stdout)
+        iteracoes = extrair_iteracoes(resultado.stdout)
 
-    media = sum(tempos) / len(tempos)
-    print("    -> media: %.6fs" % media)
-    return media
+        tempos.append(tempo)
+        if sse is not None:
+            sses.append(sse)
+        if iteracoes is not None:
+            iteracoes_lista.append(iteracoes)
+
+        info_extra = ""
+        if sse is not None:
+            info_extra += "  SSE=%.4f" % sse
+        if iteracoes is not None:
+            info_extra += "  iter=%d" % iteracoes
+        print("    tentativa %d/%d: %.6fs%s" % (i + 1, repeticoes, tempo, info_extra))
+
+    media_tempo = sum(tempos) / len(tempos)
+    media_sse = (sum(sses) / len(sses)) if sses else None
+    media_iter = (sum(iteracoes_lista) / len(iteracoes_lista)) if iteracoes_lista else None
+
+    print("    -> media: %.6fs" % media_tempo)
+
+    # AVISO automatico: se o SSE variou entre as repeticoes, isso e' um sinal
+    # de nao-determinismo (normal em GPU por causa de atomics em ordem
+    # nao-deterministica; suspeito se acontecer no sequencial/MPI+OpenMP,
+    # que deveriam dar SEMPRE o mesmo valor com semente fixa)
+    if len(set(round(s, 4) for s in sses)) > 1:
+        print("    [AVISO] SSE variou entre as %d repeticoes: %s"
+              % (len(sses), ["%.4f" % s for s in sses]))
+
+    return media_tempo, media_sse, media_iter
 
 
 def compilar(comando, cwd, nome_etapa):
@@ -214,7 +261,7 @@ def tem_comando(nome):
 
 
 def registrar(linhas_csv, versao, escalabilidade, processos, threads, linhas_dataset,
-              tempo, t_referencia, recursos):
+              tempo, t_referencia, recursos, sse_medio=None, iteracoes_media=None):
     speedup = t_referencia / tempo if tempo > 0 else 0
     eficiencia = speedup / recursos if recursos > 0 else None
     linhas_csv.append({
@@ -226,6 +273,8 @@ def registrar(linhas_csv, versao, escalabilidade, processos, threads, linhas_dat
         "tempo_segundos": round(tempo, 6),
         "speedup": round(speedup, 4),
         "eficiencia": round(eficiencia, 4) if eficiencia is not None else "",
+        "sse_medio": round(sse_medio, 6) if sse_medio is not None else "",
+        "iteracoes_medias": round(iteracoes_media, 2) if iteracoes_media is not None else "",
     })
     return speedup, eficiencia
 
@@ -272,10 +321,11 @@ def main():
         )
 
         print("\n=== SEQUENCIAL | tamanho oficial (%d linhas) ===" % n_oficial)
-        t_seq_oficial = rodar(["./kmeans_seq", str(K_CLUSTERS), str(MAX_ITER)], cwd=pasta_seq)
+        t_seq_oficial, sse_seq_oficial, iter_seq_oficial = rodar(
+            ["./kmeans_seq", str(K_CLUSTERS), str(MAX_ITER)], cwd=pasta_seq)
 
         registrar(linhas_csv, "Sequencial", "forte", 1, 1, n_oficial,
-                  t_seq_oficial, t_seq_oficial, 1)
+                  t_seq_oficial, t_seq_oficial, 1, sse_seq_oficial, iter_seq_oficial)
 
         # ===================================================================
         # 2) MPI + OPENMP -- ESCALABILIDADE FORTE (tamanho fixo = oficial,
@@ -308,10 +358,10 @@ def main():
                 comando = ["mpirun", "--oversubscribe", "-np", str(processos),
                            "./kmeans_hibrido", str(K_CLUSTERS), str(MAX_ITER)]
 
-                tempo = rodar(comando, cwd=pasta_hibrida, env=env)
+                tempo, sse, iteracoes = rodar(comando, cwd=pasta_hibrida, env=env)
                 speedup, eficiencia = registrar(
                     linhas_csv, "MPI+OpenMP", "forte", processos, threads,
-                    n_oficial, tempo, t_seq_oficial, recursos
+                    n_oficial, tempo, t_seq_oficial, recursos, sse, iteracoes
                 )
                 print("  speedup=%.3fx  eficiencia=%.1f%%" % (speedup, eficiencia * 100))
 
@@ -359,9 +409,10 @@ def main():
 
             # ---- Sequencial neste tamanho (referencia local para o speedup) ----
             print("\n=== Sequencial [FRACA] | tamanho=%d ===" % tamanho)
-            t_seq_local = rodar(["./kmeans_seq", str(K_CLUSTERS), str(MAX_ITER)], cwd=pasta_seq)
+            t_seq_local, sse_seq_local, iter_seq_local = rodar(
+                ["./kmeans_seq", str(K_CLUSTERS), str(MAX_ITER)], cwd=pasta_seq)
             registrar(linhas_csv, "Sequencial", "fraca", 1, 1, tamanho,
-                      t_seq_local, t_seq_local, 1)
+                      t_seq_local, t_seq_local, 1, sse_seq_local, iter_seq_local)
 
             # ---- MPI+OpenMP: processos = nivel de recurso, 1 thread cada ----
             if tem_mpi:
@@ -370,10 +421,10 @@ def main():
                 env["OMP_NUM_THREADS"] = "1"
                 comando = ["mpirun", "--oversubscribe", "-np", str(nivel),
                            "./kmeans_hibrido", str(K_CLUSTERS), str(MAX_ITER)]
-                tempo = rodar(comando, cwd=pasta_hibrida, env=env)
+                tempo, sse, iteracoes = rodar(comando, cwd=pasta_hibrida, env=env)
                 speedup, eficiencia = registrar(
                     linhas_csv, "MPI+OpenMP", "fraca", nivel, 1, tamanho,
-                    tempo, t_seq_local, nivel
+                    tempo, t_seq_local, nivel, sse, iteracoes
                 )
                 print("  speedup=%.3fx  eficiencia=%.1f%% (ideal p/ weak scaling: eficiencia ~100%%)"
                       % (speedup, eficiencia * 100))
@@ -381,16 +432,16 @@ def main():
             # ---- CUDA (sem "recursos" variaveis -- so' a curva por tamanho) ----
             if tem_cuda:
                 print("\n=== CUDA | tamanho=%d ===" % tamanho)
-                tempo = rodar(["./kmeans_cuda", str(K_CLUSTERS), str(MAX_ITER)], cwd=pasta_cuda)
+                tempo, sse, iteracoes = rodar(["./kmeans_cuda", str(K_CLUSTERS), str(MAX_ITER)], cwd=pasta_cuda)
                 registrar(linhas_csv, "CUDA", "fraca", "", "", tamanho,
-                          tempo, t_seq_local, 1)
+                          tempo, t_seq_local, 1, sse, iteracoes)
 
             # ---- OpenMP-GPU (idem, curva por tamanho p/ comparar com CUDA) ----
             if tem_gpu_omp:
                 print("\n=== OpenMP-GPU | tamanho=%d ===" % tamanho)
-                tempo = rodar(["./kmeans_openmp_gpu", str(K_CLUSTERS), str(MAX_ITER)], cwd=pasta_gpu_omp)
+                tempo, sse, iteracoes = rodar(["./kmeans_openmp_gpu", str(K_CLUSTERS), str(MAX_ITER)], cwd=pasta_gpu_omp)
                 registrar(linhas_csv, "OpenMP-GPU", "fraca", "", "", tamanho,
-                          tempo, t_seq_local, 1)
+                          tempo, t_seq_local, 1, sse, iteracoes)
 
     finally:
         # SEMPRE restaura o dataset oficial original, mesmo se algo falhar acima
@@ -403,7 +454,8 @@ def main():
     # -----------------------------------------------------------------------
     caminho_csv = os.path.join(RAIZ, "resultados.csv")
     campos = ["versao", "escalabilidade", "processos_mpi", "threads_openmp",
-              "linhas_dataset", "tempo_segundos", "speedup", "eficiencia"]
+              "linhas_dataset", "tempo_segundos", "speedup", "eficiencia",
+              "sse_medio", "iteracoes_medias"]
 
     with open(caminho_csv, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=campos)
