@@ -21,7 +21,6 @@ Centroide* inicializarCentroides(Dataset *dataset, int k) {
         exit(1);
     }
 
-    // inicializa com seed aleatoria
     srand(time(NULL));
 
     int *indicesAleatorios = malloc(k * sizeof(int));

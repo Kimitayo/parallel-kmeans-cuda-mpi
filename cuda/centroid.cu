@@ -17,9 +17,7 @@ void alocarCentroides(double **centroides, double **centroidesAntigos, double **
 
 void inicializarCentroides(const double *features, double *centroides, int numSamples, int numFeatures, int k) {
 
-    // Semente FIXA -- mesmo motivo das outras versoes (sequencial,
-    // MPI+OpenMP, CUDA da Clara): garante que todas as versoes partam dos
-    // mesmos centroides iniciais, tornando speedup/eficiencia comparaveis.
+    // semente fixa
     srand(42);
 
     for (int c = 0; c < k; c++) {

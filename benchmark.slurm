@@ -11,12 +11,12 @@
 
 cd "$SLURM_SUBMIT_DIR"
 
-echo "=========================================="
+
 echo "Rodando no host: $(hostname)"
 echo "Job ID: $SLURM_JOB_ID"
 echo "Diretorio do job: $SLURM_SUBMIT_DIR"
 echo "Data de inicio: $(date)"
-echo "=========================================="
+
 
 module purge
 
@@ -49,14 +49,13 @@ ls
 
 echo ""
 echo "Iniciando benchmark..."
-echo "=========================================="
 
 python3 benchmark.py
 
-echo "=========================================="
+
 echo "Benchmark finalizado."
 echo "Data de fim: $(date)"
-echo "=========================================="
+
 
 echo ""
 echo "Arquivos gerados:"

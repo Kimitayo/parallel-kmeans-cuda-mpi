@@ -14,9 +14,7 @@ Centroide* inicializarCentroides(Dataset *dataset, int k) {
         exit(1);
     }
 
-    // inicializa com seed aleatoria
-    // Semente FIXA -- necessaria para benchmarking justo entre as 4 versoes
-    // (todas devem partir dos mesmos centroides iniciais)
+    // seed fixa
     srand(42);
 
     // Para cada centroide
@@ -92,7 +90,7 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
     }
 
     // divide pela quantidade; clusters vazios preservam o centroide anterior
-    // (sem zerar antes -- um centroide zerado, com dados normalizados entre
+    // (sem zerar antes ->- um centroide zerado, com dados normalizados entre
     // 0 e 1, pode atrair pontos artificialmente)
     for (int c = 0; c < k; c++) {
         if (contagem[c] == 0)

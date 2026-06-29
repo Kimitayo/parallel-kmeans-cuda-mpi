@@ -14,11 +14,7 @@ Centroide* inicializarCentroides(Dataset *dataset, int k) {
         exit(1);
     }
 
-    // Semente FIXA -- mesmo motivo das outras versoes (sequencial,
-    // MPI+OpenMP, CUDA): garante que todas as versoes partam dos mesmos
-    // centroides iniciais, tornando speedup/eficiencia comparaveis. Sem
-    // isso, o numero de iteracoes ate' convergir varia aleatoriamente
-    // entre execucoes, contaminando a medicao de tempo.
+    // semente fixa
     srand(42);
 
     // Para cada centroide
@@ -73,12 +69,6 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
     // quantidade de vinhos por cluster
     int *contagem = (int*) calloc(k, sizeof(int));
 
-    // IMPORTANTE: soma agora e' um unico bloco CONTIGUO (k * numFeatures),
-    // nao mais um array de ponteiros (double**). Isso e' necessario pro
-    // "map" do OpenMP target conseguir copiar os dados de verdade pra GPU
-    // de uma vez so' -- um array de ponteiros so' copiaria os ENDEREÇOS
-    // (que sao da CPU e nao existem do ponto de vista da GPU), nao o
-    // conteudo que cada ponteiro aponta.
     double *soma = (double*) calloc(totalValores, sizeof(double));
 
     if (!contagem || !soma) {
@@ -86,7 +76,7 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
         exit(1);
     }
 
-    // Mapeamento real dos dados (nao so' dos ponteiros) para a GPU
+    // Mapeamento real dos dados (nao só dos ponteiros) para a GPU
     #pragma omp target enter data map(to: contagem[0:k], soma[0:totalValores])
 
     // soma features dos vinhos
@@ -104,12 +94,12 @@ void atualizarCentroides(Dataset *dataset, Centroide *centroides, int k) {
     }
 
     // Traz soma/contagem de volta pra CPU antes de atualizar os centroides
-    // (centroides[c].features e' memoria normal da CPU, fora da regiao
-    // target -- por isso essa parte roda em CPU, nao em GPU)
+    // (centroides[c].features é memoria normal da CPU, fora da regiao
+    // target --> por isso essa parte roda em CPU, nao em GPU)
     #pragma omp target update from(contagem[0:k], soma[0:totalValores])
 
-    // divide pela quantidade; clusters vazios preservam o centroide
-    // anterior (sem zerar antes -- um centroide zerado, com dados
+    // divide pela quantidade, clusters vazios preservam o centroide
+    // anterior (sem zerar antes --> um centroide zerado, com dados
     // normalizados entre 0 e 1, pode atrair pontos artificialmente pra um
     // canto do espaco de features que nao tem nada a ver com os dados reais)
     for (int c = 0; c < k; c++) {
