@@ -11,16 +11,16 @@ ulimit -s unlimited
 # Carrega o compilador da NVIDIA
 module load compilers/nvidia/nvhpc/24.11
 
-nvc -mp=gpu -gpu=managed -O3 kmeans.c ingest.c normalize.c distance.c centroid.c cluster.c convergence.c sse.c -o kmeans -lm
+nvc -mp=gpu -gpu=mem:managed -O3 kmeans.c ingest.c normalize.c distance.c centroid.c cluster.c convergence.c sse.c -o kmeans_openmp_gpu -lm
 echo "Iniciando as 5 execucoes do K-Means na GPU..."
 echo "------------------------------------------------"
 
 > metricas_execucao.txt
 
-for i in {1..4}; do
+for i in {1..5}; do
     echo -n "Execucao $i: "
     
-    SAIDA=$(./kmeans)
+    SAIDA=$(./kmeans_openmp_gpu)
     
     TEMPO=$(echo "$SAIDA" | grep "Tempo de execucao:" | awk '{print $4}')
     ITER=$(echo "$SAIDA" | grep "Convergiu na iteracao" | awk '{print $4}')
