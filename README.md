@@ -155,36 +155,6 @@ Todas as versões foram validadas comparando o **SSE final** (Sum of Squared Err
 
 ---
 
-## ⚙️ Compilação e Execução no NPAD
-
-### Sequencial
-```bash
-cd sequencial
-gcc -fopenmp -O2 kmeans.c ingest.c normalize.c distance.c centroid.c cluster.c convergence.c sse.c -o kmeans_seq -lm
-./kmeans_seq 3 100
-```
-
-### MPI + OpenMP
-```bash
-cd Hybrid_MPI_OpenMP
-mpicc -fopenmp -O2 kmeans.c ingest.c normalize.c distance.c centroid.c cluster.c convergence.c sse.c -o kmeans_hibrido -lm
-mpirun -np 4 ./kmeans_hibrido 3 100   # ajuste -np conforme desejado
-```
-
-### CUDA (otimizada)
-```bash
-cd cuda
-nvcc -O2 -rdc=true -arch=sm_70 cluster.cu distance.cu centroid.cu convergence.cu cuda_utils.cu flatten.cu ingest.cu normalize.cu sse.cu kmeans.cu -o kmeans_cuda -lm
-./kmeans_cuda 3 100
-```
-
-### OpenMP-GPU
-```bash
-cd OpenMP_With_GPU
-# requer NVIDIA HPC SDK: module load compilers/nvidia/nvhpc/24.11
-nvc -mp=gpu -gpu=managed -O3 kmeans.c ingest.c normalize.c distance.c centroid.c cluster.c convergence.c sse.c -o kmeans_openmp_gpu -lm
-./kmeans_openmp_gpu 3 100
-```
 
 ### Benchmark completo (NPAD, via SLURM)
 ```bash
@@ -196,7 +166,6 @@ sbatch benchmark_completo.slurm
 ## 📁 Estrutura do Repositório
 
 ```
-parallel-kmeans-cuda-mpi/
 ├── sequencial/              # Versão baseline (C puro)
 ├── Hybrid_MPI_OpenMP/       # Versão CPU paralela (MPI + OpenMP)
 ├── cuda/                    # Versão GPU nativa (CUDA otimizada)
