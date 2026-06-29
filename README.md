@@ -7,7 +7,7 @@ Projeto da disciplina **IMD1116 – Computação de Alto Desempenho** (UFRN), fo
 ## 👥 Equipe
 
 | Nome | 
-|---|---|
+|---|
 | Clara Virgínia Nascimento Santos | 
 | Cleiane Clementino Bondade | 
 | Felipe Augusto Lemos Barreto | 
