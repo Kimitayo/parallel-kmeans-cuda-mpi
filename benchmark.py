@@ -6,7 +6,7 @@
     ├── sequencial/
     ├── Hybrid_MPI_OpenMP/
     ├── cuda/                       (só roda se existir + tiver nvcc)
-    └── OpenMP_With_GPU/            (só roda se existir + tiver nvc, NVIDIA HPC SDK)
+    └── OpenMP_With_GPU/            (so roda se existir + tiver nvc, NVIDIA HPC SDK)
 
 """
 
@@ -21,20 +21,22 @@ import sys
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 
 
-# CONFIGURACOES GERAIS 
+# CONFIGURACOES GERAIS -- ajuste antes de rodar
+
 
 K_CLUSTERS = 3
 MAX_ITER = 100
-REPETICOES = 5  # cada configuracao roda 5x, resultado salvo média
+REPETICOES = 5  # cada configuracao roda 5x; o resultado salvo e' a MEDIA
 
-# Nome do compilador C. No NPAD normalmente "gcc" já funciona
+# Nome do compilador C. No NPAD normalmente "gcc" já funciona. 
 COMPILADOR_C = "gcc"
 
 # Arquitetura da GPU para o nvcc (CUDA). V100 = sm_70, T4 = sm_75, A100 = sm_80.
+# Confirme com `nvidia-smi --query-gpu=compute_cap --format=csv` no no' do NPAD.
 CUDA_ARCH = "sm_70"
 
 
-# numero de nucleos
+# NUMERO DE NUCLEOS 
 NUCLEOS_NO = 32
 
 
@@ -46,9 +48,9 @@ def gerar_combinacoes_strong_scaling(nucleos):
     combinacoes = []
     potencia = 1
     while potencia <= nucleos:
-        combinacoes.append((potencia, 1))         # só MPI
+        combinacoes.append((potencia, 1))         # so' MPI
         if potencia > 1:
-            combinacoes.append((1, potencia))     # so OpenMP
+            combinacoes.append((1, potencia))     # so' OpenMP
         meio = max(1, potencia // 2)
         if meio > 1 and potencia // meio > 1 and (meio, potencia // meio) not in combinacoes:
             combinacoes.append((meio, potencia // meio))  # misto
@@ -69,7 +71,7 @@ def gerar_combinacoes_strong_scaling(nucleos):
 
 COMBINACOES_STRONG = gerar_combinacoes_strong_scaling(NUCLEOS_NO)
 
-# Niveis de recurso para ESCALABILIDADE FRACA 
+# Niveis de recurso para ESCALABILIDADE FRACA
 NIVEIS_WEAK = [n for n in (1, 2, 4, 8, 16) if n <= NUCLEOS_NO]
 
 TEMPO_REGEX = re.compile(r"Tempo de execucao:\s*([\d.,]+)\s*segundos")
@@ -77,7 +79,10 @@ SSE_REGEX = re.compile(r"Qualidade do agrupamento \(SSE\):\s*([\d.,]+)")
 ITER_REGEX = re.compile(r"Convergiu na iteracao\s*(\d+)")
 
 
-# Geracao de subconjuntos do dataset oficial 
+
+# Geracao de subconjuntos do dataset oficial (para weak scaling e curva de
+# tamanho). Usa AMOSTRAGEM (nao duplicacao/jitter) do dataset real
+
 
 def ler_dataset_oficial(caminho_csv):
     with open(caminho_csv, "r", encoding="utf-8") as f:
@@ -129,7 +134,7 @@ def extrair_tempo(saida_stdout, comando_str):
 
 def extrair_sse(saida_stdout):
     """Retorna o SSE como float, ou None se nao encontrar (nao trata como
-    erro fatal --> SSE e' so' para validacao cruzada, nao essencial)."""
+    erro fatal -- SSE e' so' para validacao cruzada, nao essencial)."""
     m = SSE_REGEX.search(saida_stdout)
     if not m:
         return None
@@ -146,7 +151,7 @@ def extrair_iteracoes(saida_stdout):
 def rodar(comando, cwd, env=None, repeticoes=REPETICOES):
     """Roda o comando `repeticoes` vezes e retorna (tempo_medio, sse_medio,
     iteracoes_media). sse/iteracoes podem vir como None se o programa nao
-    imprimir esses dados"""
+    imprimir esses dados (nao e' erro fatal, so' fica de fora do CSV)."""
     tempos = []
     sses = []
     iteracoes_lista = []
@@ -187,10 +192,7 @@ def rodar(comando, cwd, env=None, repeticoes=REPETICOES):
 
     print("    -> media: %.6fs" % media_tempo)
 
-    #se o SSE variou entre as repeticoes, isso e um sinal
-    # de nao-determinismo (normal em GPU por causa de atomics em ordem
-    # nao-deterministica; suspeito se acontecer no sequencial/MPI+OpenMP,
-    # que deveriam dar SEMPRE o mesmo valor com semente fixa)
+
     if len(set(round(s, 4) for s in sses)) > 1:
         print("    [AVISO] SSE variou entre as %d repeticoes: %s"
               % (len(sses), ["%.4f" % s for s in sses]))
@@ -263,7 +265,7 @@ def main():
     try:
 
         # 1) SEQUENCIAL -- baseline no tamanho OFICIAL (escalabilidade forte)
- 
+
         pasta_seq = os.path.join(RAIZ, "sequencial")
         if not os.path.isdir(pasta_seq):
             print("[ERRO] Pasta 'sequencial/' nao encontrada.")
@@ -284,8 +286,9 @@ def main():
                   t_seq_oficial, t_seq_oficial, 1, sse_seq_oficial, iter_seq_oficial)
 
 
-        # 2) MPI + OPENMP --> ESCALABILIDADE FORTE (tamanho fixo = oficial,
+        # 2) MPI + OPENMP -- ESCALABILIDADE FORTE (tamanho fixo = oficial,
         #    varia processos x threads)
+
         pasta_hibrida = os.path.join(RAIZ, "Hybrid_MPI_OpenMP")
         tem_mpi = os.path.isdir(pasta_hibrida) and tem_comando("mpicc") and tem_comando("mpirun")
 
@@ -321,7 +324,7 @@ def main():
                 print("  speedup=%.3fx  eficiencia=%.1f%%" % (speedup, eficiencia * 100))
 
 
-        # 3) ESCALABILIDADE FRACA --> para TODAS as versoes disponiveis, no
+        # 3) ESCALABILIDADE FRACA -- para TODAS as versoes disponiveis, no
         #    mesmo conjunto de tamanhos (proporcionais aos niveis de recurso)
 
         print("\n\n########## ESCALABILIDADE FRACA (tamanho varia com os recursos) ##########")
@@ -404,8 +407,9 @@ def main():
             f.write(conteudo_original_vinhos)
         print("\n(vinhos.csv restaurado para o conteudo oficial original)")
 
-
+    # -----------------------------------------------------------------------
     # Salva o CSV final
+    # -----------------------------------------------------------------------
     caminho_csv = os.path.join(RAIZ, "resultados.csv")
     campos = ["versao", "escalabilidade", "processos_mpi", "threads_openmp",
               "linhas_dataset", "tempo_segundos", "speedup", "eficiencia",
