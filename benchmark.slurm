@@ -22,6 +22,7 @@ module purge
 
 module load softwares/tau/2.35.1
 module load cuda/12.6.2-gcc-8.5.0-ehvl44c
+module load compilers/nvidia/nvhpc/24.11
 
 echo ""
 echo "Modulos carregados:"
@@ -38,6 +39,10 @@ gcc --version | head -n 1
 echo ""
 echo "Versao do NVCC:"
 nvcc --version
+
+echo ""
+echo "Versao do NVC (OpenMP-GPU):"
+nvc --version
 
 echo ""
 echo "GPU disponivel:"

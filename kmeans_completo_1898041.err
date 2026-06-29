@@ -1,0 +1,135 @@
+Lmod Warning:
+-------------------------------------------------------------------------------
+The following dependent module(s) are not currently loaded:
+gcc-runtime/8.5.0-gcc-8.5.0-scymtd5 (required by: zstd/1.5.6-gcc-8.5.0-5rab3qi,
+libiconv/1.17-gcc-8.5.0-aljgrlp, xz/5.4.6-gcc-8.5.0-lljp7gg,
+bzip2/1.0.8-gcc-8.5.0-lvokl5n, ncurses/6.5-gcc-8.5.0-wksarjv,
+pkgconf/2.2.0-gcc-8.5.0-6pwk6kx, libpciaccess/0.17-gcc-8.5.0-rmvwow4,
+numactl/2.0.18-gcc-8.5.0-uqgd3rr, libedit/3.1-20240808-gcc-8.5.0-z4vl4qd,
+libxcrypt/4.4.35-gcc-8.5.0-3o7er2x, libmd/1.0.4-gcc-8.5.0-6hubecx,
+libbsd/0.12.2-gcc-8.5.0-gozzinq, expat/2.6.4-gcc-8.5.0-licbhdn,
+readline/8.2-gcc-8.5.0-tchyvju, gdbm/1.23-gcc-8.5.0-swdhtug,
+libffi/3.4.6-gcc-8.5.0-ohhcpk2, util-linux-uuid/2.40.2-gcc-8.5.0-ptgg4uv),
+glibc/2.28-gcc-8.5.0-vqttnls (required by: zlib-ng/2.2.1-gcc-8.5.0-nx3ks4o,
+zstd/1.5.6-gcc-8.5.0-5rab3qi, libiconv/1.17-gcc-8.5.0-aljgrlp,
+xz/5.4.6-gcc-8.5.0-lljp7gg, libxml2/2.13.4-gcc-8.5.0-judzn6c,
+cuda/12.6.2-gcc-8.5.0-ehvl44c, bzip2/1.0.8-gcc-8.5.0-lvokl5n,
+ncurses/6.5-gcc-8.5.0-wksarjv, pigz/2.8-gcc-8.5.0-32th6mj,
+tar/1.34-gcc-8.5.0-x3eo6ne, gettext/0.22.5-gcc-8.5.0-4ok7q66,
+pkgconf/2.2.0-gcc-8.5.0-6pwk6kx, libpciaccess/0.17-gcc-8.5.0-rmvwow4,
+hwloc/2.11.1-gcc-8.5.0-lfxwh4q, openssl/3.4.0-gcc-8.5.0-v5gkkke,
+libevent/2.1.12-gcc-8.5.0-d4qlhu4, numactl/2.0.18-gcc-8.5.0-uqgd3rr,
+krb5/1.21.3-gcc-8.5.0-m2fr6gr, libedit/3.1-20240808-gcc-8.5.0-z4vl4qd,
+libxcrypt/4.4.35-gcc-8.5.0-3o7er2x, openssh/9.9p1-gcc-8.5.0-f4kn7z7,
+pmix/5.0.3-gcc-8.5.0-lwlah4q, libmd/1.0.4-gcc-8.5.0-6hubecx,
+libbsd/0.12.2-gcc-8.5.0-gozzinq, expat/2.6.4-gcc-8.5.0-licbhdn,
+readline/8.2-gcc-8.5.0-tchyvju, gdbm/1.23-gcc-8.5.0-swdhtug,
+libffi/3.4.6-gcc-8.5.0-ohhcpk2, sqlite/3.46.0-gcc-8.5.0-sxxfpax,
+util-linux-uuid/2.40.2-gcc-8.5.0-ptgg4uv,
+gcc-runtime/12.3.0-gcc-12.3.0-4qxguxv)
+-------------------------------------------------------------------------------
+
+
+
+Lmod Warning:
+-------------------------------------------------------------------------------
+The following dependent module(s) are not currently loaded:
+gcc-runtime/8.5.0-gcc-8.5.0-scymtd5 (required by: zstd/1.5.6-gcc-8.5.0-5rab3qi,
+libiconv/1.17-gcc-8.5.0-aljgrlp, xz/5.4.6-gcc-8.5.0-lljp7gg,
+bzip2/1.0.8-gcc-8.5.0-lvokl5n, ncurses/6.5-gcc-8.5.0-wksarjv,
+pkgconf/2.2.0-gcc-8.5.0-6pwk6kx, libpciaccess/0.17-gcc-8.5.0-rmvwow4,
+numactl/2.0.18-gcc-8.5.0-uqgd3rr, libedit/3.1-20240808-gcc-8.5.0-z4vl4qd,
+libxcrypt/4.4.35-gcc-8.5.0-3o7er2x, libmd/1.0.4-gcc-8.5.0-6hubecx,
+libbsd/0.12.2-gcc-8.5.0-gozzinq, expat/2.6.4-gcc-8.5.0-licbhdn,
+readline/8.2-gcc-8.5.0-tchyvju, gdbm/1.23-gcc-8.5.0-swdhtug,
+libffi/3.4.6-gcc-8.5.0-ohhcpk2, util-linux-uuid/2.40.2-gcc-8.5.0-ptgg4uv),
+glibc/2.28-gcc-12.3.0-4m73ehh (required by: binutils/2.43.1-gcc-12.3.0-yjinuj6,
+elfutils/0.191-gcc-12.3.0-phhsnom, libdwarf/0.11.0-gcc-12.3.0-ltf2555,
+libunwind/1.8.1-gcc-12.3.0-fy6kyfb, openjdk/17.0.11_9-gcc-12.3.0-onok5ha,
+openmpi/4.1.6-gcc-12.3.0-6rgnzbn, python/3.11.9-gcc-12.3.0-egxne7o,
+python-venv/1.0-gcc-12.3.0-7dzgezw, otf2/3.0.3-gcc-12.3.0-4k2hagi,
+papi/7.1.0-gcc-12.3.0-x2goddi, pdt/3.25.2-gcc-12.3.0-stwcgu7,
+tau/2.35.1-gcc-12.3.0-ss4u6t2)
+-------------------------------------------------------------------------------
+
+
+
+
+The following have been reloaded with a version change:
+  1) glibc/2.28-gcc-12.3.0-4m73ehh => glibc/2.28-gcc-8.5.0-vqttnls
+
+Lmod Warning:
+-------------------------------------------------------------------------------
+The following dependent module(s) are not currently loaded:
+gcc-runtime/8.5.0-gcc-8.5.0-scymtd5 (required by: zstd/1.5.6-gcc-8.5.0-5rab3qi,
+libiconv/1.17-gcc-8.5.0-aljgrlp, xz/5.4.6-gcc-8.5.0-lljp7gg,
+bzip2/1.0.8-gcc-8.5.0-lvokl5n, ncurses/6.5-gcc-8.5.0-wksarjv,
+pkgconf/2.2.0-gcc-8.5.0-6pwk6kx, libpciaccess/0.17-gcc-8.5.0-rmvwow4,
+numactl/2.0.18-gcc-8.5.0-uqgd3rr, libedit/3.1-20240808-gcc-8.5.0-z4vl4qd,
+libxcrypt/4.4.35-gcc-8.5.0-3o7er2x, libmd/1.0.4-gcc-8.5.0-6hubecx,
+libbsd/0.12.2-gcc-8.5.0-gozzinq, expat/2.6.4-gcc-8.5.0-licbhdn,
+readline/8.2-gcc-8.5.0-tchyvju, gdbm/1.23-gcc-8.5.0-swdhtug,
+libffi/3.4.6-gcc-8.5.0-ohhcpk2, util-linux-uuid/2.40.2-gcc-8.5.0-ptgg4uv),
+glibc/2.28-gcc-8.5.0-vqttnls (required by: zlib-ng/2.2.1-gcc-8.5.0-nx3ks4o,
+zstd/1.5.6-gcc-8.5.0-5rab3qi, libiconv/1.17-gcc-8.5.0-aljgrlp,
+xz/5.4.6-gcc-8.5.0-lljp7gg, libxml2/2.13.4-gcc-8.5.0-judzn6c,
+cuda/12.6.2-gcc-8.5.0-ehvl44c, bzip2/1.0.8-gcc-8.5.0-lvokl5n,
+ncurses/6.5-gcc-8.5.0-wksarjv, pigz/2.8-gcc-8.5.0-32th6mj,
+tar/1.34-gcc-8.5.0-x3eo6ne, gettext/0.22.5-gcc-8.5.0-4ok7q66,
+pkgconf/2.2.0-gcc-8.5.0-6pwk6kx, libpciaccess/0.17-gcc-8.5.0-rmvwow4,
+hwloc/2.11.1-gcc-8.5.0-lfxwh4q, openssl/3.4.0-gcc-8.5.0-v5gkkke,
+libevent/2.1.12-gcc-8.5.0-d4qlhu4, numactl/2.0.18-gcc-8.5.0-uqgd3rr,
+krb5/1.21.3-gcc-8.5.0-m2fr6gr, libedit/3.1-20240808-gcc-8.5.0-z4vl4qd,
+libxcrypt/4.4.35-gcc-8.5.0-3o7er2x, openssh/9.9p1-gcc-8.5.0-f4kn7z7,
+pmix/5.0.3-gcc-8.5.0-lwlah4q, libmd/1.0.4-gcc-8.5.0-6hubecx,
+libbsd/0.12.2-gcc-8.5.0-gozzinq, expat/2.6.4-gcc-8.5.0-licbhdn,
+readline/8.2-gcc-8.5.0-tchyvju, gdbm/1.23-gcc-8.5.0-swdhtug,
+libffi/3.4.6-gcc-8.5.0-ohhcpk2, sqlite/3.46.0-gcc-8.5.0-sxxfpax,
+util-linux-uuid/2.40.2-gcc-8.5.0-ptgg4uv,
+gcc-runtime/12.3.0-gcc-12.3.0-4qxguxv)
+-------------------------------------------------------------------------------
+
+
+
+Lmod Warning:
+-------------------------------------------------------------------------------
+The following dependent module(s) are not currently loaded:
+gcc-runtime/8.5.0-gcc-8.5.0-scymtd5 (required by: zstd/1.5.6-gcc-8.5.0-5rab3qi,
+libiconv/1.17-gcc-8.5.0-aljgrlp, xz/5.4.6-gcc-8.5.0-lljp7gg,
+bzip2/1.0.8-gcc-8.5.0-lvokl5n, ncurses/6.5-gcc-8.5.0-wksarjv,
+pkgconf/2.2.0-gcc-8.5.0-6pwk6kx, libpciaccess/0.17-gcc-8.5.0-rmvwow4,
+numactl/2.0.18-gcc-8.5.0-uqgd3rr, libedit/3.1-20240808-gcc-8.5.0-z4vl4qd,
+libxcrypt/4.4.35-gcc-8.5.0-3o7er2x, libmd/1.0.4-gcc-8.5.0-6hubecx,
+libbsd/0.12.2-gcc-8.5.0-gozzinq, expat/2.6.4-gcc-8.5.0-licbhdn,
+readline/8.2-gcc-8.5.0-tchyvju, gdbm/1.23-gcc-8.5.0-swdhtug,
+libffi/3.4.6-gcc-8.5.0-ohhcpk2, util-linux-uuid/2.40.2-gcc-8.5.0-ptgg4uv),
+glibc/2.28-gcc-12.3.0-4m73ehh (required by: binutils/2.43.1-gcc-12.3.0-yjinuj6,
+elfutils/0.191-gcc-12.3.0-phhsnom, libdwarf/0.11.0-gcc-12.3.0-ltf2555,
+libunwind/1.8.1-gcc-12.3.0-fy6kyfb, openjdk/17.0.11_9-gcc-12.3.0-onok5ha,
+openmpi/4.1.6-gcc-12.3.0-6rgnzbn, python/3.11.9-gcc-12.3.0-egxne7o,
+python-venv/1.0-gcc-12.3.0-7dzgezw, otf2/3.0.3-gcc-12.3.0-4k2hagi,
+papi/7.1.0-gcc-12.3.0-x2goddi, pdt/3.25.2-gcc-12.3.0-stwcgu7,
+tau/2.35.1-gcc-12.3.0-ss4u6t2)
+-------------------------------------------------------------------------------
+
+
+
+
+The following have been reloaded with a version change:
+  1) glibc/2.28-gcc-12.3.0-4m73ehh => glibc/2.28-gcc-8.5.0-vqttnls
+
+nvc-Warning- The -gpu=[no]managed option is deprecated; please use -gpu=mem:managed or -gpu=mem:separate instead
+kmeans.c:
+ingest.c:
+normalize.c:
+distance.c:
+centroid.c:
+cluster.c:
+"cluster.c", line 10: warning: variable "mudouCluster" was set but never used [set_but_not_used]
+      for (int i = 0; i < dataset->linhas; i++) {
+      ^
+
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+
+convergence.c:
+sse.c:
