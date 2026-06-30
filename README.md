@@ -137,7 +137,7 @@ O projeto implementa o K-Means em **4 versões**, todas em linguagem C, aplicada
 | 5 | 0,703s | 70 | 0,416s | 38 | 1,69x |
 | 8 | 0,940s | 65 | 0,249s | 50 | **3,78x** |
 
-> 📌 A vantagem da GPU cresce significativamente com k: a cada iteração, cada ponto calcula distância para todos os k centroides — trabalho embaraçosamente paralelo que a GPU absorve muito bem.
+> 📌 A vantagem da GPU cresce significativamente com k: a cada iteração, cada ponto calcula distância para todos os k centroides — trabalho paralelo que a GPU absorve muito bem.
 
 ---
 
